@@ -1,9 +1,9 @@
 // app/api/auth/register/route.js
 
-import dbConnect from '@/lib/dbconnect.js'; 
-import User from '@/models/User';
-import bcrypt from 'bcrypt';
-
+import dbConnect from "@/lib/dbconnect.js";
+import User from "@/models/User";
+import bcrypt from "bcrypt";
+import { NextResponse } from "next/server";
 export async function POST(req) {
   try {
     const { name, email, password } = await req.json();
@@ -13,9 +13,12 @@ export async function POST(req) {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return new Response(JSON.stringify({ error: 'User already exists' }), {
-        status: 400,
-      });
+      return new NextResponse(
+        JSON.stringify({ error: "User already exists" }),
+        {
+          status: 400,
+        }
+      );
     }
 
     // Hash the password
@@ -25,12 +28,15 @@ export async function POST(req) {
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    return new Response(JSON.stringify({ message: 'User registered successfully!' }), {
-      status: 201,
-    });
+    return new NextResponse(
+      JSON.stringify({ message: "User registered successfully!" }),
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
-    console.error('Registration error:', error);
-    return new Response(JSON.stringify({ error: 'Registration failed' }), {
+    console.error("Registration error:", error);
+    return new NextResponse(JSON.stringify({ error: "Registration failed" }), {
       status: 500,
     });
   }

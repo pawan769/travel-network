@@ -1,51 +1,36 @@
 "use client";
-import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import Link from "next/link";
-const Home = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-  const submitHandler = () => {
-    console.log("submit handler clicked!");
+import { signOut } from "next-auth/react";
+
+const Dashboard = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("./auth/signIn");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  const logoutHandler = async () => {
+    console.log("logout clicked");
+    await signOut({ redirect: true, callbackUrl: "/auth/signIn" }); // Redirect to home after logout
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="mb-4 text-2xl font-bold">Login</h1>
-      <form onSubmit={submitHandler} className="w-96">
-        <Input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-          className="mb-3"
-        />
-        <Input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-          className="mb-4"
-        />
-        <Button type="submit" className="w-full">
-          Login
-        </Button>
-        <div className="text-sm my-3 text-center">
-          Don't have an account? <Link className="font-bold" href={"./auth/register"}>Register</Link>
-        </div>
-      </form>
+    <div>
+      {`Welcome ${session.user.name} to the Dashboard`}
+      <Button className="mx-5" onClick={logoutHandler}>
+        Logout
+      </Button>
     </div>
   );
 };
 
-export default Home;
+export default Dashboard;

@@ -2,15 +2,17 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
+  const [isError, setIsError] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,9 +32,12 @@ const Register = () => {
 
     if (response.ok) {
       console.log("User registered successfully");
+      router.push("./signIn");
+      setIsError(false); // Redirect to home page
     } else {
       const errorData = await response.json();
       console.error("Registration error:", errorData);
+      setIsError(true);
     }
   };
 
@@ -72,10 +77,17 @@ const Register = () => {
         </Button>
         <div className="text-sm my-3 text-center">
           Already have an account?{" "}
-          <Link className="font-bold" href={"../"}>
+          <Link className="font-bold" href={"./signIn"}>
             Login
           </Link>
         </div>
+        {isError ? (
+          <div>
+            <p className="text-red-500 text-center text-sm">
+              Error Registering
+            </p>
+          </div>
+        ) : null}
       </form>
     </div>
   );
