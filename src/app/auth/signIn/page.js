@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -5,8 +6,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 const Home = () => {
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -18,18 +21,22 @@ const Home = () => {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const result = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
     });
+    if (result) {
+      setIsLoading(false);
+    }
 
     if (result.error) {
       console.log(result);
       setError(result.error);
     } else {
-      router.push("/");
+      router.push("../dashboard");
     }
   };
   return (
@@ -54,17 +61,20 @@ const Home = () => {
           required
           className="mb-4"
         />
-        <Button type="submit" className="w-full">
-          Login
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
         </Button>
         <div className="text-sm my-3 text-center">
-          Don't have an account?{" "}
+          Don't have an account?
           <Link className="font-bold" href={"./register"}>
             Register
           </Link>
         </div>
         {error && (
-          <p className="text-sm text-red-500 text-center">Incorrect Email or Password</p>
+          <p className="text-sm text-red-500 text-center">
+            Incorrect Email or Password
+          </p>
         )}
       </form>
     </div>

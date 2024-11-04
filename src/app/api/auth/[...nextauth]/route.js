@@ -15,28 +15,33 @@ export const authOptions = {
       },
       authorize: async (credentials) => {
         await dbConnect();
-    
+
         // Find user by email
         const user = await User.findOne({ email: credentials.email });
         if (!user) {
-            // Return null if the user is not found
-            throw new Error("No user found with this email");
+          // Return null if the user is not found
+          throw new Error("No user found with this email");
         }
-    
+
         // Validate password
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
         console.log(isValid);
         if (!isValid) {
-            // Return null if the password does not match
-            throw new Error("Incorrect password");
+          // Return null if the password does not match
+          throw new Error("Incorrect password");
         }
-    
+
         // Return user object if authentication is successful
         return { id: user._id, name: user.name, email: user.email };
-    },
-})],
+      },
+    }),
+  ],
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 24,
   },
   callbacks: {
     async jwt({ token, user }) {

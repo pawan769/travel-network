@@ -4,15 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,6 +24,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const response = await fetch("/api/auth/register", {
       method: "POST",
@@ -29,15 +33,18 @@ const Register = () => {
       },
       body: JSON.stringify(formData),
     });
+    if (response) {
+      setIsLoading(false);
+    }
 
     if (response.ok) {
       console.log("User registered successfully");
       router.push("./signIn");
-      setIsError(false); // Redirect to home page
+      // Redirect to home page
     } else {
       const errorData = await response.json();
       console.error("Registration error:", errorData);
-      setIsError(true);
+      setError(errorData.error);
     }
   };
 
@@ -72,8 +79,8 @@ const Register = () => {
           required
           className="mb-4"
         />
-        <Button type="submit" className="w-full">
-          Register
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <Loader2 className="animate-spin" /> : "Register"}
         </Button>
         <div className="text-sm my-3 text-center">
           Already have an account?{" "}
@@ -81,11 +88,9 @@ const Register = () => {
             Login
           </Link>
         </div>
-        {isError ? (
+        {error ? (
           <div>
-            <p className="text-red-500 text-center text-sm">
-              Error Registering
-            </p>
+            <p className="text-red-500 text-center text-sm">{error}</p>
           </div>
         ) : null}
       </form>
