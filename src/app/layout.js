@@ -1,12 +1,14 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import SessionWrapper from "./sessionProvider";
+import AppProvider from "./redux/Provider.js";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -24,7 +26,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionWrapper>{children}</SessionWrapper>
+        <SessionWrapper>
+          <AppProvider>{children}</AppProvider>
+          
+        </SessionWrapper>
       </body>
     </html>
   );

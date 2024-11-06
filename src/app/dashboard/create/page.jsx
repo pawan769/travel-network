@@ -14,7 +14,7 @@ const CreatePost = () => {
   const [message, setMessage] = useState("");
   useEffect(() => {
     setPost({ ...post, author: session ? session.user.id : null });
-  }, [session]);
+  }, [session,post]);
 
   const handleChange = (e) => {
     setPost({ ...post, caption: e.target.value });
