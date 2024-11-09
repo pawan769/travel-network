@@ -19,7 +19,7 @@ const LeftSideBar = () => {
   const { data: session, status } = useSession();
 
   const list = [
-    { icon: <House />, name: "Home", path: "/" },
+    { icon: <House />, name: "Home", path: "../" },
     { icon: <Search />, name: "Search", path: "search" },
     { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <MessageSquare />, name: "Messages", path: "messages" },
@@ -50,7 +50,6 @@ const LeftSideBar = () => {
           src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
           alt="PP"
           className="w-10 h-10 rounded-full"
-          
         />
         {session ? session.user.name : null}
       </div>

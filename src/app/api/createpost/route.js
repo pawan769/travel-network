@@ -5,7 +5,10 @@ import Post from "@/models/Post";
 
 export async function POST(req) {
   try {
-    const { author, caption } = await req.json();
+    const newPost = await req.json();
+    const { author, caption, image } = newPost.post;
+    console.log(newPost.post);
+
     await dbConnect();
 
     const user = await User.findOne({ _id: author });
@@ -13,13 +16,16 @@ export async function POST(req) {
       throw new Error("Author required");
     }
 
-    const post = new Post({ author, caption });
+    if (!image || !image.url || !image.publicId) {
+      return NextResponse.json(
+        { message: "Image URL and Public ID are required" },
+        { status: 400 }
+      );
+    }
+    const post = new Post({ caption, image, author });
     await post.save();
 
-    console.log("Post created successfully");
-    return new NextResponse(
-      JSON.stringify({ message: "Post Created Successfully" })
-    );
+    return NextResponse.json({ message: "Post Created Successfully" });
   } catch (error) {
     throw new Error(error);
   }

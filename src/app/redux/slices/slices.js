@@ -9,7 +9,9 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
+      if (JSON.stringify(state.user) !== JSON.stringify(action.payload)) {
+        state.user = action.payload;
+      }
     },
   },
 });

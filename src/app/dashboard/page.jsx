@@ -15,22 +15,33 @@ const Dashboard = () => {
 
   const router = useRouter();
 
+  const user = useSelector((state) => state.app.user);
+  console.log(user);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("./auth/signIn");
-    } else if (status === "authenticated") {
-      const fetchUser = async () => {
-        const userDetails = await getUser(session.user.id);
-          dispatch(setUser(userDetails));
-        
-      };
-
-      fetchUser();
     }
-  }, [status, session]);
+  
+    if (status === "authenticated") {
+      const fetchUser = async () => {
+        try {
+          const userDetails = await getUser(session.user.id);
+          // Dispatch to Redux or set state only if user data is valid
+          if (userDetails) {
+            dispatch(setUser(userDetails));
+          }
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+        }
+      };
+  
+      fetchUser(); // Call async function
+    }
+  }, );
+  
 
-  const user = useSelector((state) => state.app.user);
-  console.log(user);
+  
 
   if (status === "loading") {
     return (
