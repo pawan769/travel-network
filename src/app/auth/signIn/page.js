@@ -33,7 +33,7 @@ const Home = () => {
     }
 
     if (result.error) {
-      console.log(result);
+      
       setError(result.error);
     } else {
       router.push("../dashboard");

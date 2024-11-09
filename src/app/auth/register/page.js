@@ -38,7 +38,7 @@ const Register = () => {
     }
 
     if (response.ok) {
-      console.log("User registered successfully");
+     
       router.push("./signIn");
       // Redirect to home page
     } else {

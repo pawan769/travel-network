@@ -28,7 +28,7 @@ export const authOptions = {
           credentials.password,
           user.password
         );
-        console.log(isValid);
+        
         if (!isValid) {
           // Return null if the password does not match
           throw new Error("Incorrect password");

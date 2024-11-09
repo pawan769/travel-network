@@ -16,7 +16,7 @@ const Dashboard = () => {
   const router = useRouter();
 
   const user = useSelector((state) => state.app.user);
-  console.log(user);
+  
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -52,7 +52,7 @@ const Dashboard = () => {
   }
 
   const logoutHandler = async () => {
-    console.log("logout clicked");
+    
     await signOut({ redirect: true, callbackUrl: "/auth/signIn" }); // Redirect to home after logout
   };
   return (

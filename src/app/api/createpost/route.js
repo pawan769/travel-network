@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     const newPost = await req.json();
     const { author, caption, image } = newPost.post;
-    console.log(newPost.post);
+    
 
     await dbConnect();
 

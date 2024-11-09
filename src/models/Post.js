@@ -3,7 +3,7 @@ import User from "./User";
 
 const PostSchema = new mongoose.Schema(
   {
-    caption: { type: String,  },
+    caption: { type: String },
     image: {
       url: { type: String, required: [true, "image is not provided"] },
       publicId: { type: String, required: [true, "public id is not provided"] },
@@ -12,6 +12,10 @@ const PostSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: User,
       required: [true, "author is required"],
+    },
+    location: {
+      lat: { type: Number, required: [true, "latitude is not provided"] },
+      lng: { type: Number, required: [true, "longitude is not provided"] },
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
   },

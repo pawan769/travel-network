@@ -5,15 +5,35 @@ import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import DragDropUploader from "@/app/dashboard/create/DragDropUploader";
+import clsx from "clsx";
+import { useToast } from "@/hooks/use-toast";
+
+// Leaflet imports
+import dynamic from "next/dynamic";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { Icon } from "leaflet";
+
+// Dynamically import the map to prevent SSR issues
+const LeafletMap = dynamic(() => import("./map/LeafletMap.js"), { ssr: false });
 
 const CreatePost = () => {
   const { data: session } = useSession();
-  const [post, setPost] = useState({ author: "", caption: "", image: {} });
+  const [post, setPost] = useState({
+    author: "",
+    caption: "",
+    image: {},
+    location: {},
+  });
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [preview, setPreview] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null); // Store selected location
 
   const fileInputRef = useRef(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (session) {
@@ -25,23 +45,19 @@ const CreatePost = () => {
     setPost((prevPost) => ({ ...prevPost, caption: e.target.value }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      const base64Image = reader.result; // This is the Data URL
-      setImage(base64Image);
-    };
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+  const handleImageSelect = (selectedImage) => {
+    setImage(selectedImage);
   };
+
+  useEffect(() => {
+    // Enable button only if both caption and image are provided
+    setIsDisabled(!(post.caption && image && selectedLocation));
+  }, [post.caption, image, selectedLocation]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setIsDisabled(true);
     setMessage("");
 
     if (!image) {
@@ -55,7 +71,7 @@ const CreatePost = () => {
         image: image,
         username: session.user.name,
       });
-      console.log(imageResponse);
+
       if (imageResponse.data.url && imageResponse.data.public_id) {
         setPost((prevPost) => ({
           ...prevPost,
@@ -65,12 +81,11 @@ const CreatePost = () => {
           },
         }));
       } else {
-        setMessage("image response didnt came!");
+        setMessage("Image response didn't come!");
         return;
       }
-      console.log(post);
+      console.log(selectedLocation);
       // Create post in the backend
-
       const postResponse = await axios.post(
         "/api/createpost",
         {
@@ -80,6 +95,8 @@ const CreatePost = () => {
               url: imageResponse.data.url,
               publicId: imageResponse.data.public_id,
             },
+
+            location: {...selectedLocation}, // Include location in the post
           },
         },
         {
@@ -88,44 +105,83 @@ const CreatePost = () => {
       );
 
       setMessage(postResponse.data.message || "Post created successfully!");
-      fileInputRef.current.value = null;
+      toast({
+        description: "Post is created successfully",
+        variant: "success",
+      });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
       setPost({ ...post, caption: "", image: {} });
+      setPreview(null);
+      setSelectedLocation(null); // Clear location after post creation
     } catch (error) {
       console.error("Post creation failed:", error);
-      // setMessage("Failed to create post. Please try again.");
+      setMessage("Failed to create post. Please try again.");
+      setIsLoading(false);
+      setIsDisabled(false);
     } finally {
       setIsLoading(false);
+      setIsDisabled(false);
     }
   };
 
   return (
     <div>
-      <form onSubmit={submitHandler}>
-        <Input
-          type="text"
-          name="caption"
-          value={post.caption}
-          onChange={handleCaptionChange}
-          placeholder="Caption"
-          required
-          className="mb-3"
-        />
-        <Input
-          type="file"
-          onChange={handleImageChange}
-          required
-          ref={fileInputRef}
-          className="mb-3"
-          
-        />
-        <Button type="submit">
-          {isLoading ? (
-            <Loader2 className="animate-spin size-4" />
-          ) : (
-            <p>Post</p>
-          )}
-        </Button>
-      </form>
+      <h1 className="font-bold text-7xl mb-8 text-center">Create Post</h1>
+      <div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-start-1 ">
+            <div className="flex">
+              <Input
+                type="text"
+                name="caption"
+                value={post.caption}
+                onChange={handleCaptionChange}
+                placeholder="Please Enter Caption"
+                required
+                className="mb-3"
+              />
+            </div>
+            <DragDropUploader
+              onImageSelect={handleImageSelect}
+              preview={preview}
+              setPreview={setPreview}
+            />
+            <Button
+              type="submit"
+              disabled={isDisabled}
+              className={clsx("transition-opacity duration-300", {
+                "opacity-50 cursor-not-allowed": isDisabled,
+                "opacity-100": !isDisabled,
+              })}
+              onClick={submitHandler}
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin size-4" />
+              ) : (
+                <p>Post</p>
+              )}
+            </Button>
+          </div>
+
+          {/* Leaflet Map to Select Location */}
+          <div className="mt-8 relative col-start-2">
+            {selectedLocation && (
+              <div>
+                <p>
+                  Location selected: {selectedLocation.lat},{" "}
+                  {selectedLocation.lng}
+                </p>
+              </div>
+            )}
+            <LeafletMap
+              selectedLocation={selectedLocation}
+              setSelectedLocation={setSelectedLocation}
+            />
+          </div>
+        </div>
+      </div>
       {message && <div>{message}</div>}
     </div>
   );
