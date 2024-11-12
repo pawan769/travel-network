@@ -96,7 +96,7 @@ const CreatePost = () => {
               publicId: imageResponse.data.public_id,
             },
 
-            location: {...selectedLocation}, // Include location in the post
+            location: selectedLocation, // Include location in the post
           },
         },
         {
@@ -127,11 +127,11 @@ const CreatePost = () => {
   };
 
   return (
-    <div>
+    <div className="w-[65%] m-auto">
       <h1 className="font-bold text-7xl mb-8 text-center">Create Post</h1>
       <div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="col-start-1 ">
+          <div className="col-start-1">
             <div className="flex">
               <Input
                 type="text"

@@ -21,7 +21,7 @@ const LeafletMap = ({ selectedLocation, setSelectedLocation }) => {
     html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path></svg>`,
     className: "custom-map-icon",
     iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconAnchor: [10, 20],
   });
   useEffect(() => {
     if (mapRef.current) {
@@ -149,7 +149,7 @@ const LeafletMap = ({ selectedLocation, setSelectedLocation }) => {
   return (
     <div>
       <div className="border-2 relative">
-        <div ref={mapRef} className="h-[400px] w-[430px]  relative z-0" />
+        <div ref={mapRef} className="h-[400px] w-[450px]  relative z-0" />
         <Button
           onClick={handleLocate}
           className="absolute right-1 bottom-5 z-10 rounded-full hover:bg-black hover:text-white"
