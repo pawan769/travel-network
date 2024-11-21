@@ -8,9 +8,9 @@ import {
   House,
   MessageSquare,
   Search,
-  Slack,
+  
   SquarePlus,
-  UserRoundPen,
+  
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 

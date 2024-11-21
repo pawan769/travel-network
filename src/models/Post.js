@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "./User";
+import Comment from "./Comment";
 
 const PostSchema = new mongoose.Schema(
   {
@@ -18,6 +19,7 @@ const PostSchema = new mongoose.Schema(
       lng: { type: Number, required: [true, "longitude is not provided"] },
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
+    comments :[{type:mongoose.Schema.Types.ObjectId,ref:Comment}]
   },
   { timestamps: true }
 );

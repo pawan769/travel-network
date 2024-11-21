@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/slices/slices";
+import { setRecommendedPosts, setUser } from "../redux/slices/slices";
 import getUser from "../utils/getUser";
 import Post from "./Post";
+import getRecommendedPosts from "../utils/getRecommendedPosts";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -16,27 +17,38 @@ const Dashboard = () => {
   const router = useRouter();
 
   const user = useSelector((state) => state.app.user);
+  const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
+
+  // Local state to track initialization completion
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Ensure the session is available before attempting to fetch user data
     if (session?.user?.id) {
-      const fetchUser = async () => {
+      const initializeData = async () => {
         try {
           const userDetails = await getUser(session.user.id);
           if (userDetails) {
             dispatch(setUser(userDetails)); // Dispatch user data to Redux
           }
+
+          const recommendedPosts = await getRecommendedPosts(session.user.id);
+          if (recommendedPosts) {
+            dispatch(setRecommendedPosts(recommendedPosts)); // Dispatch recommended posts to Redux
+          }
+
+          // Mark initialization as complete
+          setIsInitialized(true);
         } catch (error) {
-          console.error("Failed to fetch user:", error);
+          console.error("Failed to fetch data:", error);
         }
       };
 
-      fetchUser(); // Fetch user data once session is available
+      initializeData(); // Fetch and set data
     }
-  }, [session, dispatch]); // Run effect when session or dispatch changes
+  }, [session, dispatch]);
 
-  // Loading state
-  if (status === "loading") {
+  // Display loading state until initialization is complete
+  if (status === "loading" || !isInitialized) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">
         <Loader2 className="animate-spin" size={56} />
@@ -54,14 +66,22 @@ const Dashboard = () => {
       {user ? (
         <div className=" w-full">
           <div className="flex items-center justify-between">
-            <p>Welcome, {user.name} to the Dashboard</p>
+            {!isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
             <Button className="mx-5" onClick={logoutHandler}>
               Logout
             </Button>
           </div>
           <div className="grid grid-cols-6 text-center">
-            <div className="col-span-3 "><Post/><Post/><Post/><Post/><Post/><Post/></div>
-            <div className="col-span-3  ">rightSideHome</div>
+            <div className="col-span-3 ">
+              {recommendedPosts.map((post, index) => (
+                <Post
+                  key={index}
+                  post={post}
+                  recommendedPosts={recommendedPosts}
+                />
+              ))}
+            </div>
+            <div className="col-span-3">rightSideHome</div>
           </div>
         </div>
       ) : (

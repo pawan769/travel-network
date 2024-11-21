@@ -45,7 +45,7 @@ export async function POST(req) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    
     return new NextResponse(
       JSON.stringify({
         error: "Error occurred while fetching user data",
