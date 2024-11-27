@@ -2,14 +2,14 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRecommendedPosts, setUser } from "../redux/slices/slices";
 import getUser from "../utils/getUser";
 import Post from "./Post";
 import getRecommendedPosts from "../utils/getRecommendedPosts";
+import RightSideBar from "./rightSideBar";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -56,22 +56,14 @@ const Dashboard = () => {
     );
   }
 
-  // Logout handler
-  const logoutHandler = async () => {
-    await signOut({ redirect: true, callbackUrl: "/auth/signIn" });
-  };
-
   return (
     <>
       {user ? (
         <div className=" w-full">
           <div className="flex items-center justify-between">
             {!isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
-            <Button className="mx-5" onClick={logoutHandler}>
-              Logout
-            </Button>
           </div>
-          <div className="grid grid-cols-6 text-center">
+          <div className="grid grid-cols-6 text-center ">
             <div className="col-span-3 ">
               {recommendedPosts.map((post, index) => (
                 <Post
@@ -81,7 +73,9 @@ const Dashboard = () => {
                 />
               ))}
             </div>
-            <div className="col-span-3">rightSideHome</div>
+            <div className="col-span-3">
+              <RightSideBar visiblePosts={recommendedPosts} />
+            </div>
           </div>
         </div>
       ) : (

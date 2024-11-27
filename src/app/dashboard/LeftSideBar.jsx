@@ -46,7 +46,7 @@ const LeftSideBar = () => {
           </div>
         );
       })}
-      <div className="flex gap-3 px-4 items-center w-fit mt-2 capitalize cursor-pointer">
+      <div className="flex gap-3 px-4 items-center w-fit mt-2 capitalize cursor-pointer" onClick={()=>itemClickHandler({path:"profile"})}>
         <Image
           src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
           alt="PP"
