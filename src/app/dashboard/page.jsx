@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,8 +19,9 @@ const Dashboard = () => {
   const user = useSelector((state) => state.app.user);
   const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
 
-  // Local state to track initialization completion
   const [isInitialized, setIsInitialized] = useState(false);
+  const [visiblePostId, setVisiblePostId] = useState(null); // To track the currently visible post
+  const postRefs = useRef([]);
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -45,7 +46,34 @@ const Dashboard = () => {
 
       initializeData(); // Fetch and set data
     }
-  }, [session, dispatch]);
+
+    if (isInitialized && recommendedPosts.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // Set the visible post ID when it enters the viewport
+              const newId = entry.target.getAttribute("data-id");
+              setVisiblePostId(newId);
+            }
+          });
+        },
+        { threshold: 1 } // Trigger when 50% of the post is visible
+      );
+
+      // Attach observer to all posts
+      postRefs.current.forEach((ref) => {
+        observer.observe(ref);
+      });
+
+      return () => {
+        // Cleanup observer on unmount
+        postRefs.current.forEach((ref) => {
+          if (ref) observer.unobserve(ref);
+        });
+      };
+    }
+  }, [session, dispatch, isInitialized, recommendedPosts]);
 
   // Display loading state until initialization is complete
   if (status === "loading" || !isInitialized) {
@@ -59,23 +87,33 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className=" w-full">
+        <div className="w-full">
           <div className="flex items-center justify-between">
-            {!isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
+            {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
           </div>
-          <div className="grid grid-cols-6 text-center ">
-            <div className="col-span-3 ">
+          <div className="grid grid-cols-6 text-center">
+            <div className="col-span-3">
               {recommendedPosts.map((post, index) => (
-                <Post
+                <div
                   key={index}
-                  post={post}
-                  recommendedPosts={recommendedPosts}
-                />
+                  ref={(el) => (postRefs.current[index] = el)}
+                  data-id={post._id}
+                  className="post-item mb-4"
+                >
+                  <Post post={post} recommendedPosts={recommendedPosts} />
+                </div>
               ))}
             </div>
             <div className="col-span-3">
-              <RightSideBar visiblePosts={recommendedPosts} />
+              {console.log(visiblePostId)}
+              <RightSideBar
+                visiblePosts={recommendedPosts}
+                highlightedPostId={visiblePostId}
+              />
             </div>
+          </div>
+          <div className="fixed bottom-2 right-2 bg-black text-white px-4 py-2 rounded">
+            Visible Post ID: {visiblePostId || "None"}
           </div>
         </div>
       ) : (

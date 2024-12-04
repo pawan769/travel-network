@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import addComment from "../utils/addComment";
 import { useDispatch, useSelector } from "react-redux";
 import { setRecommendedPosts } from "../redux/slices/slices";
+import { Input } from "@/components/ui/input";
 
 const Post = ({ post }) => {
   const { data: session, status } = useSession();
@@ -55,9 +56,9 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className=" rounded-lg p-4 shadow-lg max-w-xl mx-auto my-2 ">
+    <div className=" rounded-lg p-4 shadow-lg max-w-xl mx-auto my-2 h-[60vh] border-2 border-zinc-300 ">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 ">
         <div className="flex items-center space-x-3">
           <Avatar className="h-10 w-10">
             <Image
@@ -93,76 +94,81 @@ const Post = ({ post }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <div className=" flex h-[85%] gap-2">
+        <div className=" flex flex-col w-[50%]">
+          {/* Post Image */}
+          <div className="mb-3  h-[87%] w-full">
+            <Image
+              src={post?.image.url}
+              alt="Post Image"
+              width={300}
+              height={300}
+              className="rounded-lg object-cover h-[100%] w-[100%]"
+              priority
+            />
+          </div>
 
-      {/* Post Image */}
-      <div className="mb-5">
-        <Image
-          src={post?.image.url}
-          alt="Post Image"
-          width={600}
-          height={400}
-          className="rounded-lg object-cover"
-          priority
-        />
-      </div>
-
-      {/* Review System */}
-      <div className="flex space-x-2 mb-4">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={24}
-            className={`cursor-pointer ${
-              i < rating ? "text-yellow-400" : "text-gray-300"
-            }`}
-            onClick={() => handleRating(i + 1)}
-          />
-        ))}
-      </div>
-      <div className="flex items-center space-x-3 text-sm">
-        <Avatar className="h-6 w-6">
-          <Image
-            src={
-              "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
-            }
-            alt="Profile Avatar"
-            width={20}
-            height={20}
-            className="rounded-full"
-          />
-        </Avatar>
-        <h3 className="font-semibold capitalize">{post?.author.name}</h3>
-        <p>{post?.caption}</p>
-      </div>
-
-      {/* Comments Section */}
-      <div>
-        <h4 className="font-semibold mb-2">Comments</h4>
-        <div className="space-y-2">
-          {post?.comments.map((data, index) => (
-            <div
-              key={index}
-              className="border rounded p-2 bg-gray-100 text-sm flex gap-2"
-            >
-              <h3 className="font-semibold">{data.commenter.name}</h3>
-              <p>{data.comment}</p>
-            </div>
-          ))}
+          {/* Review System */}
+          <div className="flex space-x-2 mb-4">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={24}
+                className={`cursor-pointer ${
+                  i < rating ? "text-yellow-400" : "text-gray-300"
+                }`}
+                onClick={() => handleRating(i + 1)}
+              />
+            ))}
+          </div>
         </div>
+        <div className="flex flex-col justify-between">
+          <div className="flex items-center space-x-3 text-sm  h-[10%]">
+            <Avatar className="h-6 w-6">
+              <Image
+                src={
+                  "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
+                }
+                alt="Profile Avatar"
+                width={30}
+                height={30}
+                className="rounded-full"
+              />
+            </Avatar>
+            <h3 className="font-semibold capitalize">{post?.author.name}</h3>
+            <p>{post?.caption}</p>
+          </div>
 
-        <div className="mt-3 flex gap-2">
-          <Textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Add a comment..."
-            className=""
-          />
-          <Button
-            onClick={handleCommentSubmit}
-            className="bg-blue-500 text-white"
-          >
-            Comment
-          </Button>
+          {/* Comments Section */}
+          <div className="h-[90%] flex flex-col ">
+            <h4 className="font-semibold mb-2">Comments</h4>
+            <div className="space-y-2 h-[60%] overflow-hidden">
+              {post?.comments.map((data, index) => (
+                <div
+                  key={index}
+                  className="border rounded p-2 bg-gray-100 text-sm flex gap-2"
+                >
+                  <h3 className="font-semibold">{data.commenter.name}</h3>
+                  <p>{data.comment}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 flex gap-2">
+              <Input
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="focus-visible:ring-transparent"
+              />
+              <Button
+                onClick={handleCommentSubmit}
+                className="bg-blue-500 text-white"
+              >
+                Comment
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
