@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MoreVertical, Edit2, Trash2, Star } from "lucide-react";
+import { MoreVertical, Edit2, Trash2 } from "lucide-react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 import Image from "next/image";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,41 +18,82 @@ import addComment from "../utils/addComment";
 import { useDispatch, useSelector } from "react-redux";
 import { setRecommendedPosts } from "../redux/slices/slices";
 import { Input } from "@/components/ui/input";
+import setLike from "../utils/setLike";
+import { Loader2 } from "lucide-react";
+import deletePost from "../utils/deletePost";
 
 const Post = ({ post }) => {
   const { data: session, status } = useSession();
-  const [rating, setRating] = useState(0);
   const [newComment, setNewComment] = useState("");
+  const [commentLoading, setCommentLoading] = useState(false);
 
   const [showEdit, setShowEdit] = useState(false);
   const dispatch = useDispatch();
   const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
 
-  const handleRating = (value) => setRating(value);
-
   const handleCommentSubmit = async () => {
+    setCommentLoading(true);
     if (newComment.trim() !== "") {
-      try {
-        const addedComment = await addComment(
-          post._id,
-          newComment,
-          session.user.id
+      const addedComment = await addComment(
+        post._id,
+        newComment,
+        session.user.id
+      );
+      setNewComment("");
+      if (addedComment) {
+        const updatedRecommendedPosts = recommendedPosts.map((p) =>
+          p._id === post._id
+            ? {
+                ...p,
+                comments: [...p.comments, addedComment],
+              }
+            : p
         );
-        setNewComment("");
-        if (addedComment) {
-          const updatedRecommendedPosts = recommendedPosts.map((p) =>
-            p._id === post._id
-              ? {
-                  ...p,
-                  comments: [...p.comments, addedComment],
-                }
-              : p
-          );
-          console.log(updatedRecommendedPosts);
 
-          dispatch(setRecommendedPosts(updatedRecommendedPosts));
-        }
-      } catch (error) {}
+        dispatch(setRecommendedPosts(updatedRecommendedPosts));
+        setCommentLoading(false);
+      }
+    }
+  };
+
+  //like handler
+
+  const likeClickHandler = () => {
+    if (!post.likes.includes(session.user.id)) {
+      const updatedRecommendedPosts = recommendedPosts.map((p) =>
+        p._id === post._id
+          ? {
+              ...p,
+              likes: [...p.likes, session.user.id],
+            }
+          : p
+      );
+
+      setLike(session.user.id, post._id);
+      dispatch(setRecommendedPosts(updatedRecommendedPosts));
+    }
+    if (post.likes.includes(session.user.id)) {
+      const updatedRecommendedPosts = recommendedPosts.map((p) =>
+        p._id === post._id
+          ? {
+              ...p,
+              likes: p.likes.filter((id) => id !== session.user.id),
+            }
+          : p
+      );
+      setLike(session.user.id, post._id);
+      dispatch(setRecommendedPosts(updatedRecommendedPosts));
+    }
+  };
+
+  const deletePostHandler = () => {
+    if (post.author._id === session.user.id) {
+      const updatedRecommendedPosts = recommendedPosts.filter(
+        (p) => p._id !== post._id
+      );
+
+      deletePost(post._id, session.user.id);
+      dispatch(setRecommendedPosts(updatedRecommendedPosts));
     }
   };
 
@@ -87,15 +129,15 @@ const Post = ({ post }) => {
               <Edit2 className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => alert("Option 2")}>
+            <DropdownMenuItem onClick={deletePostHandler}>
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className=" flex h-[85%] gap-2">
-        <div className=" flex flex-col w-[50%]">
+      <div className=" flex h-[85%] gap-1 ">
+        <div className=" flex flex-col w-[45%] ">
           {/* Post Image */}
           <div className="mb-3  h-[87%] w-full">
             <Image
@@ -109,21 +151,25 @@ const Post = ({ post }) => {
           </div>
 
           {/* Review System */}
-          <div className="flex space-x-2 mb-4">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={24}
-                className={`cursor-pointer ${
-                  i < rating ? "text-yellow-400" : "text-gray-300"
-                }`}
-                onClick={() => handleRating(i + 1)}
+          <div className="flex gap-2 mb-4 items-center ">
+            {post.likes.includes(session?.user.id) ? (
+              <FaHeart
+                onClick={likeClickHandler}
+                className="text-red-600 size-5 cursor-pointer"
               />
-            ))}
+            ) : (
+              <FaRegHeart
+                className="cursor-pointer size-5 "
+                onClick={likeClickHandler}
+              />
+            )}
+            <div className="font-semibold">{`${
+              post ? post.likes.length : 0
+            } Likes`}</div>
           </div>
         </div>
-        <div className="flex flex-col justify-between">
-          <div className="flex items-center space-x-3 text-sm  h-[10%]">
+        <div className="flex flex-col justify-between  w-[55%] ">
+          <div className="flex items-top space-x-3 text-sm  h-[20%] px-2">
             <Avatar className="h-6 w-6">
               <Image
                 src={
@@ -135,20 +181,24 @@ const Post = ({ post }) => {
                 className="rounded-full"
               />
             </Avatar>
-            <h3 className="font-semibold capitalize">{post?.author.name}</h3>
-            <p>{post?.caption}</p>
+
+            <p className="max-w-[80%] text-left break-words mb-2">
+              {post?.caption}
+            </p>
           </div>
 
           {/* Comments Section */}
-          <div className="h-[90%] flex flex-col ">
-            <h4 className="font-semibold mb-2">Comments</h4>
+          <div className="max-h-[80%] flex flex-col justify-between pb-2  px-1">
+            <h4 className="font-semibold mb-2 ">Comments</h4>
             <div className="space-y-2 h-[60%] overflow-hidden">
               {post?.comments.map((data, index) => (
                 <div
                   key={index}
                   className="border rounded p-2 bg-gray-100 text-sm flex gap-2"
                 >
-                  <h3 className="font-semibold">{data.commenter.name}</h3>
+                  <h3 className="font-semibold capitalize">
+                    {data.commenter.name}
+                  </h3>
                   <p>{data.comment}</p>
                 </div>
               ))}
@@ -161,11 +211,16 @@ const Post = ({ post }) => {
                 placeholder="Add a comment..."
                 className="focus-visible:ring-transparent"
               />
+
               <Button
                 onClick={handleCommentSubmit}
-                className="bg-blue-500 text-white"
+                className="bg-blue-500 text-white text-xs px-2"
               >
-                Comment
+                {commentLoading ? (
+                  <Loader2 className="animate-spin size-5 w-10" />
+                ) : (
+                  <p>Comment</p>
+                )}
               </Button>
             </div>
           </div>

@@ -14,12 +14,13 @@ const MapPreview = ({ posts, highlightedPostId }) => {
 
   useEffect(() => {
     if (highlightedPostId) {
-      const hello = recommendedPosts.filter(
-        (elem) => elem._id === highlightedPostId
+      const selectedPost = recommendedPosts.find(
+        (post) => post._id === highlightedPostId
       );
-      setLocation(hello[0]?.location);
-      console.log(location);
+      setLocation(selectedPost?.location);
     }
+
+    // Initialize map instance once
     if (!mapInstanceRef.current && mapRef.current) {
       const mapInstance = L.map(mapRef.current).setView([28.02, 48.55], 13);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -32,49 +33,64 @@ const MapPreview = ({ posts, highlightedPostId }) => {
     if (mapInstanceRef.current) {
       const map = mapInstanceRef.current;
 
+      // Remove existing popups
       map.eachLayer((layer) => {
         if (layer instanceof L.Popup) {
           map.removeLayer(layer);
         }
       });
 
-      posts.forEach((post) => {
-        const { lat, lng } = post.location;
+      // Add popups for non-highlighted posts
+      posts
+        .filter((p) => p._id !== highlightedPostId)
+        .forEach((post) => {
+          const { lat, lng } = post.location;
 
-        // Create popup content with Tailwind classes
-        const popupContent = `
-          <div class="popup-content text-center bg-black text-white rounded-lg shadow-md p-1 w-[100px] h-[105px] content-center">
-            <img src="${post.image.url}" alt="${post.caption}" class="rounded-lg object-cover w-[100px] h-[105px] mb-2" />
-            <p class="text-xs">${post.caption}</p>
+          // Create popup content
+          const popupContent = `
+          <div class="popup-content">
+            <img src="${post.image.url}" alt="${post.caption}" class="popup-img" />
+            <p class="popup-text">${post.caption}</p>
           </div>`;
 
-        // Create popup instance
-        const popup = L.popup({
-          closeOnClick: false,
-          autoClose: false,
-          closeButton: false,
-        })
-          .setLatLng([lat, lng])
-          .setContent(popupContent).addTo(map);
-        // if (post._id === highlightedPost._id) {
-        //   map.removeLayer(popup);
-        //   popup.addTo(map);
-        // }
-        // Add click handler to the popup's DOM element directly
-        const popupElement = popup._container;
-        if (popupElement) {
-          popupElement.addEventListener("click", () => {
-            console.log(post.caption);
-            map.removeLayer(popup);
-            // popup.addTo(map);
-          });
-        }
-      });
+          // Create popup instance
+          const popup = L.popup({
+            closeOnClick: false,
+            autoClose: false,
+            closeButton: false,
+          })
+            .setLatLng([lat, lng])
+            .setContent(popupContent)
+            .addTo(map);
+        });
 
-      // Reset the map view to avoid zooming into the last popup
+      // Add popup for highlighted post
+      if (highlightedPostId) {
+        const highlightedPost = posts.find((p) => p._id === highlightedPostId);
+        if (highlightedPost) {
+          const { lat, lng } = highlightedPost.location;
+
+          const popupContent = `
+          <div class="popup-content highlighted">
+            <img src="${highlightedPost.image.url}" alt="${highlightedPost.caption}" class="popup-img" />
+            <p class="popup-text">${highlightedPost.caption}</p>
+          </div>`;
+
+          const popup = L.popup({
+            closeOnClick: false,
+            autoClose: false,
+            closeButton: false,
+          })
+            .setLatLng([lat, lng])
+            .setContent(popupContent)
+            .addTo(map);
+        }
+      }
+
+      // Reset the map view
       map.setView(
         location ? [location.lat, location.lng] : [27.7172, 85.324],
-        location ? 13.1 : 13
+        12
       );
     }
   }, [posts, highlightedPostId, location, recommendedPosts]);

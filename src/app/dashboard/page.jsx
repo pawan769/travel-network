@@ -73,7 +73,7 @@ const Dashboard = () => {
         });
       };
     }
-  }, [session, dispatch, isInitialized, recommendedPosts]);
+  }, [session, isInitialized]);
 
   // Display loading state until initialization is complete
   if (status === "loading" || !isInitialized) {
@@ -97,7 +97,7 @@ const Dashboard = () => {
                 <div
                   key={index}
                   ref={(el) => (postRefs.current[index] = el)}
-                  data-id={post._id}
+                  data-id={post?._id}
                   className="post-item mb-4"
                 >
                   <Post post={post} recommendedPosts={recommendedPosts} />
@@ -111,9 +111,6 @@ const Dashboard = () => {
                 highlightedPostId={visiblePostId}
               />
             </div>
-          </div>
-          <div className="fixed bottom-2 right-2 bg-black text-white px-4 py-2 rounded">
-            Visible Post ID: {visiblePostId || "None"}
           </div>
         </div>
       ) : (
