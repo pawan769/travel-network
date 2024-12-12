@@ -33,12 +33,41 @@ const MapPreview = ({ posts, highlightedPostId }) => {
     if (mapInstanceRef.current) {
       const map = mapInstanceRef.current;
 
-      // Remove existing popups
+      // Remove existing markers
       map.eachLayer((layer) => {
-        if (layer instanceof L.Popup) {
+        if (layer instanceof L.Marker) {
           map.removeLayer(layer);
         }
       });
+
+      const createIcon = (img, flag) => {
+        const customIcon = L.divIcon({
+          className: "custom-marker",
+          html: `
+          <div class="${
+            flag
+              ? "h-16 w-16 -translate-x-[1.5rem] -translate-y-20 "
+              : "h-10 w-10 -translate-x-[0.65rem] -translate-y-12 "
+          } flex flex-col bg-black text-white rounded-full items-center  relative z-50">
+          
+          <img 
+          src="${img}" 
+          alt="image" 
+          class=" h-full w-full object-cover aspect-square rounded-full bg-red-400" 
+          />
+          
+            
+            </div>
+            <div class=" ${
+              flag
+                ? "-translate-y-[6rem] translate-x-[0.4rem]"
+                : "-translate-y-16 translate-x-2 "
+            } h-7 w-[0.10rem] bg-black rounded-3xl"></div>
+        
+        `,
+        });
+        return customIcon;
+      };
 
       // Add popups for non-highlighted posts
       posts
@@ -46,22 +75,13 @@ const MapPreview = ({ posts, highlightedPostId }) => {
         .forEach((post) => {
           const { lat, lng } = post.location;
 
-          // Create popup content
-          const popupContent = `
-          <div class="popup-content">
-            <img src="${post.image.url}" alt="${post.caption}" class="popup-img" />
-            <p class="popup-text">${post.caption}</p>
-          </div>`;
 
-          // Create popup instance
-          const popup = L.popup({
-            closeOnClick: false,
-            autoClose: false,
-            closeButton: false,
-          })
-            .setLatLng([lat, lng])
-            .setContent(popupContent)
-            .addTo(map);
+          // Create marker instance
+          const customIcon = createIcon(post.image.url, false);
+          L.marker([lat, lng], { icon: customIcon, zIndexOffset: 0 }).addTo(
+            map
+          );
+          console.log(post.caption);
         });
 
       // Add popup for highlighted post
@@ -70,20 +90,11 @@ const MapPreview = ({ posts, highlightedPostId }) => {
         if (highlightedPost) {
           const { lat, lng } = highlightedPost.location;
 
-          const popupContent = `
-          <div class="popup-content highlighted">
-            <img src="${highlightedPost.image.url}" alt="${highlightedPost.caption}" class="popup-img" />
-            <p class="popup-text">${highlightedPost.caption}</p>
-          </div>`;
-
-          const popup = L.popup({
-            closeOnClick: false,
-            autoClose: false,
-            closeButton: false,
-          })
-            .setLatLng([lat, lng])
-            .setContent(popupContent)
-            .addTo(map);
+          
+          const customIcon = createIcon(highlightedPost.image.url, true);
+          L.marker([lat, lng], { icon: customIcon, zIndexOffset: 1000 }).addTo(
+            map
+          );
         }
       }
 

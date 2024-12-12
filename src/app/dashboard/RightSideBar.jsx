@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
-const MapPreview = dynamic(() => import("./MapPreview"), { ssr: false });
+const MapPreview = dynamic(() => import("./MapPreview.jsx"), { ssr: false });
+// const MapBar = dynamic(() => import("./MapBar.jsx"), { ssr: false });
 
 const RightSideBar = ({ visiblePosts, highlightedPostId }) => {
   const [isClient, setIsClient] = useState(false);
@@ -16,6 +17,7 @@ const RightSideBar = ({ visiblePosts, highlightedPostId }) => {
   return (
     <div className="w-full h-screen">
       <MapPreview posts={visiblePosts} highlightedPostId={highlightedPostId} />
+      {/* <MapBar posts={visiblePosts} highlightedPostId={highlightedPostId} /> */}
     </div>
   );
 };

@@ -28,7 +28,6 @@ export default function RootLayout({ children }) {
       >
         <SessionWrapper>
           <AppProvider>{children}</AppProvider>
-          
         </SessionWrapper>
       </body>
     </html>
