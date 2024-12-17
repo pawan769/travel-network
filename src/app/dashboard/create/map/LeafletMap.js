@@ -11,7 +11,12 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import LControlGeocoder from "leaflet-control-geocoder";
 
 // Disable SSR (Server-Side Rendering) for the map
-const LeafletMap = ({ selectedLocation, setSelectedLocation }) => {
+const LeafletMap = ({
+  selectedLocation,
+  setSelectedLocation,
+  setPost,
+  post,
+}) => {
   const [position, setPosition] = useState(null);
   const [map, setMap] = useState({});
   const mapRef = useRef(null); // To reference the map container
@@ -44,6 +49,10 @@ const LeafletMap = ({ selectedLocation, setSelectedLocation }) => {
         .addTo(mapInstance)
         .on("markgeocode", function (e) {
           const { lat, lng } = e.geocode.center;
+
+          console.log(e);
+
+          setPost({ ...post, caption: e.geocode.name });
           setPosition({ lat, lng });
           setSelectedLocation({ lat, lng });
           mapInstance.setView([lat, lng], 13);
@@ -147,26 +156,23 @@ const LeafletMap = ({ selectedLocation, setSelectedLocation }) => {
   };
 
   return (
-    <div>
-      <div className="border-2 relative">
-        <div ref={mapRef} className="h-[400px] w-[450px]  relative z-0" />
-        <Button
-          onClick={handleLocate}
-          className="absolute right-1 bottom-5 z-10 rounded-full hover:bg-black hover:text-white"
-          variant="outline"
-          type="button"
-        >
-          <Locate />
-        </Button>
-      </div>
-
+    <div className="border-2 relative ">
+      <div ref={mapRef} className="h-[25rem] w-[40rem] z-0" />
       <Button
-        onClick={handleSelectLocation}
-        className="mt-4 p-2 bg-blue-500 text-white rounded"
+        onClick={handleLocate}
+        className="absolute left-1 bottom-5 z-10 rounded-full hover:bg-black hover:text-white"
+        variant="outline"
         type="button"
       >
-        Select this location
+        <Locate />
       </Button>
+      {/* <Button
+          onClick={handleSelectLocation}
+          className="mt-4 p-2 bg-blue-500 text-white rounded"
+          type="button"
+        >
+          Select this location
+        </Button> */}
     </div>
   );
 };

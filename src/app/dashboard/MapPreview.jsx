@@ -69,12 +69,11 @@ const MapPreview = ({ posts, highlightedPostId }) => {
         return customIcon;
       };
 
-      // Add popups for non-highlighted posts
+      // Add marker for non-highlighted posts
       posts
         .filter((p) => p._id !== highlightedPostId)
         .forEach((post) => {
           const { lat, lng } = post.location;
-
 
           // Create marker instance
           const customIcon = createIcon(post.image.url, false);
@@ -84,13 +83,12 @@ const MapPreview = ({ posts, highlightedPostId }) => {
           console.log(post.caption);
         });
 
-      // Add popup for highlighted post
+      // Add marker for highlighted post
       if (highlightedPostId) {
         const highlightedPost = posts.find((p) => p._id === highlightedPostId);
         if (highlightedPost) {
           const { lat, lng } = highlightedPost.location;
 
-          
           const customIcon = createIcon(highlightedPost.image.url, true);
           L.marker([lat, lng], { icon: customIcon, zIndexOffset: 1000 }).addTo(
             map
@@ -99,14 +97,15 @@ const MapPreview = ({ posts, highlightedPostId }) => {
       }
 
       // Reset the map view
+      const zoom = map.getZoom();
       map.setView(
         location ? [location.lat, location.lng] : [27.7172, 85.324],
-        12
+        zoom < 12 ? zoom : 12
       );
     }
   }, [posts, highlightedPostId, location, recommendedPosts]);
 
-  return <div ref={mapRef} className="h-[90vh] w-[40vw] fixed mt-10"></div>;
+  return <div ref={mapRef} className="h-[90vh] w-[40vw] fixed mt-5"></div>;
 };
 
 export default dynamic(() => Promise.resolve(MapPreview), { ssr: false });

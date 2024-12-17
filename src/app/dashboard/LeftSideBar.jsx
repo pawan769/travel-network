@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import {
@@ -8,13 +8,14 @@ import {
   House,
   MessageSquare,
   Search,
-  
   SquarePlus,
-  
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ModalExample from "./create/dialog";
 
 const LeftSideBar = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const router = useRouter();
 
   const { data: session, status } = useSession();
@@ -29,7 +30,12 @@ const LeftSideBar = () => {
   ];
 
   const itemClickHandler = (elem) => {
-    router.replace(`/dashboard/${elem.path}`);
+    if (elem.path === "create") {
+      setModalOpen(true);
+      console.log(isModalOpen);
+    } else {
+      router.replace(`/dashboard/${elem.path}`);
+    }
   };
   return (
     <div className="  flex flex-col gap-5  text-xl font-semibold  px-3 pt-7">
@@ -42,11 +48,14 @@ const LeftSideBar = () => {
             onClick={() => itemClickHandler(elem)}
           >
             <div>{elem.icon}</div>
-            <div >{elem.name}</div>
+            <div>{elem.name}</div>
           </div>
         );
       })}
-      <div className="flex gap-3 px-4 items-center w-fit mt-2 capitalize cursor-pointer" onClick={()=>itemClickHandler({path:"profile"})}>
+      <div
+        className="flex gap-3 px-4 items-center w-fit mt-2 capitalize cursor-pointer"
+        onClick={() => itemClickHandler({ path: "profile" })}
+      >
         <Image
           src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
           alt="PP"
@@ -56,6 +65,9 @@ const LeftSideBar = () => {
         />
         {session ? session.user.name : null}
       </div>
+      {isModalOpen && (
+        <ModalExample open={isModalOpen} setModalOpen={setModalOpen} />
+      )}
     </div>
   );
 };

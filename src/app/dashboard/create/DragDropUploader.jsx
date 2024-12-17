@@ -46,46 +46,45 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
   };
 
   return (
-    <div className="relative">
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={clsx(
-          "border-2 border-dashed p-6 text-center rounded-md transition-all cursor-pointer mb-4 h-[390px]",
-          isDragging ? "border-blue-500 bg-blue-100" : "border-gray-300"
-        )}
-      >
-        {!preview ? (
-          <div className="flex flex-col items-center">
-            <p className="text-sm text-gray-600">
-              Drag and drop an image here, or click to select
-            </p>
-            <Upload className="m-8 size-10" />
-          </div>
-        ) : (
-          <Image
-            src={preview}
-            alt="Preview"
-            width={300} // Specify the width
-            height={320} // Specify the height
-            className="max-w-full  max-h-full mt-2 rounded-md object-contain m-auto"
-          />
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileInputChange}
-          className="hidden"
-          id="fileInput"
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={clsx(
+        "border-2 border-dashed p-6 text-center rounded-md transition-all flex flex-col justify-center items-center w-full cursor-pointer mb-4 h-[390px] relative",
+        isDragging ? "border-blue-500 bg-blue-100" : "border-gray-300"
+      )}
+    >
+      {!preview ? (
+        <div className="flex flex-col items-center">
+          <p className="text-sm text-gray-600">
+            Drag and drop an image here, or click to select
+          </p>
+          <Upload className="m-8 size-10" />
+        </div>
+      ) : (
+        <Image
+          src={preview}
+          alt="Preview"
+          width={300} // Specify the width
+          height={320} // Specify the height
+          className="max-w-full  max-h-full mt-2 rounded-md object-contain m-auto"
         />
-        <label
-          htmlFor="fileInput"
-          className="underline text-blue-600 cursor-pointer"
-        >
-          {preview ? "Change image" : "Select from computer"}
-        </label>
-      </div>
+      )}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileInputChange}
+        className="hidden"
+        id="fileInput"
+      />
+      <label
+        htmlFor="fileInput"
+        className="underline text-blue-600 cursor-pointer"
+      >
+        {preview ? "Change image" : "Select from computer"}
+      </label>
+
       {preview && (
         <Button
           variant="ghost"
