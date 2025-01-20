@@ -6,8 +6,8 @@ import Post from "@/models/Post";
 export async function POST(req) {
   try {
     const newPost = await req.json();
-    const { author, caption, image,location } = newPost.post;
-    
+    const { author, caption, image, location, address, description } =
+      newPost.post;
 
     await dbConnect();
 
@@ -22,11 +22,21 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    const post = new Post({ caption, image, author,location });
+    const post = new Post({
+      caption,
+      image,
+      author,
+      location,
+      address,
+      description,
+    });
     await post.save();
+    
 
-    return NextResponse.json({ message: "Post Created Successfully" });
+    return NextResponse.json({ message: "Post Created Successfully", post });
   } catch (error) {
-    throw new Error(error);
+    console.log(error.response.data.message);
+
+    return error.response.data.message;
   }
 }

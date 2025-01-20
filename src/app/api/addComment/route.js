@@ -10,6 +10,15 @@ export const POST = async (req) => {
     console.log(postId, comment, commenter);
     await dbConnect();
 
+    if (!comment) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Please write a comment!",
+          success: false,
+        }),
+        { status: 404 }
+      );
+    }
     const user = await User.findById(commenter);
 
     if (!user) {

@@ -33,6 +33,13 @@ const Post = ({ post }) => {
 
   const handleCommentSubmit = async () => {
     setCommentLoading(true);
+    if (newComment.trim() === "") {
+      setCommentLoading(false);
+      return 0;
+    }
+   
+      
+    
     if (newComment.trim() !== "") {
       const addedComment = await addComment(
         post._id,
@@ -102,7 +109,7 @@ const Post = ({ post }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4 ">
         <div className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-10 w-10 -z-10">
             <Image
               src={
                 "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
@@ -170,7 +177,7 @@ const Post = ({ post }) => {
         </div>
         <div className="flex flex-col justify-between  w-[55%] ">
           <div className="flex items-top space-x-3 text-sm  h-[20%] px-2">
-            <Avatar className="h-6 w-6">
+            <Avatar className="h-6 w-6 -z-10">
               <Image
                 src={
                   "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"

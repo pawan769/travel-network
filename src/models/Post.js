@@ -5,6 +5,8 @@ import Comment from "./Comment";
 const PostSchema = new mongoose.Schema(
   {
     caption: { type: String },
+    address: { type: String, required: [true, "please,enter the address"] },
+    description: { type: String },
     image: {
       url: { type: String, required: [true, "image is not provided"] },
       publicId: { type: String, required: [true, "public id is not provided"] },
@@ -19,7 +21,7 @@ const PostSchema = new mongoose.Schema(
       lng: { type: Number, required: [true, "longitude is not provided"] },
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
-    comments :[{type:mongoose.Schema.Types.ObjectId,ref:Comment}]
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: Comment }],
   },
   { timestamps: true }
 );

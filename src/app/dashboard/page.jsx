@@ -10,6 +10,8 @@ import getUser from "../utils/getUser";
 import Post from "./Post";
 import getRecommendedPosts from "../utils/getRecommendedPosts";
 import RightSideBar from "./rightSideBar";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,7 @@ const Dashboard = () => {
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [visiblePostId, setVisiblePostId] = useState(null); // To track the currently visible post
+
   const postRefs = useRef([]);
 
   useEffect(() => {
@@ -58,7 +61,7 @@ const Dashboard = () => {
             }
           });
         },
-        { threshold: 1 } // Trigger when 50% of the post is visible
+        { threshold: 1 } // Trigger when 100% of the post is visible
       );
 
       // Attach observer to all posts
@@ -75,6 +78,20 @@ const Dashboard = () => {
     }
   }, [session, isInitialized]);
 
+  const userRecommendationHandler = async () => {
+    try {
+      const response = await axios.post(
+        "./api/fetchRecommendations",
+        { userId: session.user.id },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log(response);
+      dispatch(setRecommendedPosts(response.data.posts));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Display loading state until initialization is complete
   if (status === "loading" || !isInitialized) {
     return (
@@ -90,6 +107,16 @@ const Dashboard = () => {
         <div className="w-full">
           <div className="flex items-center justify-between">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
+          </div>
+          <div>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-white bg-black"
+              onClick={userRecommendationHandler}
+            >
+              Get UserBased Recommendation
+            </Button>
           </div>
           <div className="grid grid-cols-6 text-center">
             <div className="col-span-3">

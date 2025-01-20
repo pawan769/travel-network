@@ -13,7 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import ModalExample from "./create/dialog";
 
-const LeftSideBar = () => {
+const LeftSideBar = ({ setNavToggle }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const router = useRouter();
@@ -32,14 +32,16 @@ const LeftSideBar = () => {
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
       setModalOpen(true);
-      console.log(isModalOpen);
+      setNavToggle(true);
     } else {
       router.replace(`/dashboard/${elem.path}`);
+      setNavToggle(true);
     }
   };
   return (
-    <div className="  flex flex-col gap-5  text-xl font-semibold  px-3 pt-7">
-      <div className="text-3xl  px-5 py-2 w-fit  cursor-pointer">LOGO</div>
+    <div className="w-full flex flex-col gap-5  text-xl font-semibold overflow-hidden pt-7">
+      <div className="text-3xl  px-5 py-2  cursor-pointer">LOGO</div>
+
       {list.map((elem, index) => {
         return (
           <div
@@ -47,13 +49,14 @@ const LeftSideBar = () => {
             className="flex gap-3 items-center ml-3 rounded-xl px-2 py-3 hover:bg-zinc-200 cursor-pointer"
             onClick={() => itemClickHandler(elem)}
           >
-            <div>{elem.icon}</div>
-            <div>{elem.name}</div>
+            <div className="md:mx-auto lg:mx-0">{elem.icon}</div>
+            <div className="md:hidden lg:block sm:block ">{elem.name}</div>
           </div>
         );
       })}
+
       <div
-        className="flex gap-3 px-4 items-center w-fit mt-2 capitalize cursor-pointer"
+        className="flex gap-3 px-4 items-center  md:justify-center lg:justify-start w-full mt-2 capitalize cursor-pointer"
         onClick={() => itemClickHandler({ path: "profile" })}
       >
         <Image

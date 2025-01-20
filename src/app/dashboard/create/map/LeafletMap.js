@@ -52,7 +52,7 @@ const LeafletMap = ({
 
           console.log(e);
 
-          setPost({ ...post, caption: e.geocode.name });
+          setPost({ ...post, address: e.geocode.name });
           setPosition({ lat, lng });
           setSelectedLocation({ lat, lng });
           mapInstance.setView([lat, lng], 13);

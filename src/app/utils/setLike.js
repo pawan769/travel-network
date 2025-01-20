@@ -13,7 +13,8 @@ const setLike = async (userId, postId) => {
     );
     console.log(response);
   } catch (error) {
-    return response.data;
+    console.log("error");
+    console.log(response);
   }
 };
 export default setLike;

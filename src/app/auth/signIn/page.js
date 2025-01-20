@@ -28,56 +28,62 @@ const Home = () => {
       password: formData.password,
       redirect: false,
     });
-    if (result) {
-      setIsLoading(false);
-    }
+    // if (result) {
+    // }
 
     if (result.error) {
-      
       setError(result.error);
-    } else {
+      setIsLoading(false);
+    } else if (result) {
       router.push("../dashboard");
+    } else {
+      setIsLoading(false);
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="mb-4 text-2xl font-bold">Login</h1>
-      <form onSubmit={submitHandler} className="w-96">
-        <Input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-          className="mb-3"
-        />
-        <Input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-          className="mb-4"
-        />
+    <section className=" h-screen min-w-[500px]  flex justify-center items-center py-44 px-10 md:px-44">
+      <div className="flex flex-col items-center justify-center  min-w-[60%] min-h-[60%] flex-1 ">
+        <h1 className="mb-4 text-2xl font-bold">Login</h1>
+        <form
+          onSubmit={submitHandler}
+          className="w-full max-w-[500px]  flex-1 flex flex-col  items-center"
+        >
+          <Input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+            className="mb-3"
+          />
+          <Input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+            className="mb-4"
+          />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
-        </Button>
-        <div className="text-sm my-3 text-center">
-          Don't have an account?
-          <Link className="font-bold" href={"./register"}>
-            Register
-          </Link>
-        </div>
-        {error && (
-          <p className="text-sm text-red-500 text-center">
-            Incorrect Email or Password
-          </p>
-        )}
-      </form>
-    </div>
+          <Button type="submit" className="w-44" disabled={isLoading}>
+            {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
+          </Button>
+          <div className="text-sm my-3 text-center">
+            Don't have an account?
+            <Link className="font-bold" href={"./register"}>
+              Register
+            </Link>
+          </div>
+          {error && (
+            <p className="text-sm text-red-500 text-center">
+              Incorrect Email or Password
+            </p>
+          )}
+        </form>
+      </div>
+    </section>
   );
 };
 

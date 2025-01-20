@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 // Leaflet imports
 import dynamic from "next/dynamic";
 import Image from "next/image.js";
+import { setRecommendedPosts } from "@/app/redux/slices/slices.js";
+import { useDispatch, useSelector } from "react-redux";
 
 // Dynamically import the map to prevent SSR issues
 const LeafletMap = dynamic(() => import("./map/LeafletMap.js"), { ssr: false });
@@ -25,6 +27,8 @@ const CreatePost = ({ setModalOpen }) => {
     caption: "",
     image: {},
     location: {},
+    address: "",
+    description: "",
   });
   const [image, setImage] = useState(null);
   const [step, setStep] = useState(1);
@@ -33,6 +37,8 @@ const CreatePost = ({ setModalOpen }) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [preview, setPreview] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null); // Store selected location
+  const dispatch = useDispatch();
+  const recommendedPosts = useSelector((store) => store.app.recommendedPosts);
 
   const fileInputRef = useRef(null);
   const { toast } = useToast();
@@ -46,6 +52,12 @@ const CreatePost = ({ setModalOpen }) => {
   const handleCaptionChange = (e) => {
     setPost((prevPost) => ({ ...prevPost, caption: e.target.value }));
   };
+  const handleAddressChange = (e) => {
+    setPost((prevPost) => ({ ...prevPost, address: e.target.value }));
+  };
+  const handleDescriptionChange = (e) => {
+    setPost((prevPost) => ({ ...prevPost, description: e.target.value }));
+  };
 
   const handleImageSelect = (selectedImage) => {
     setImage(selectedImage);
@@ -58,8 +70,8 @@ const CreatePost = ({ setModalOpen }) => {
 
   useEffect(() => {
     // Enable button only if both caption and image are provided
-    setIsDisabled(!(post.caption && image && selectedLocation));
-  }, [post.caption, image, selectedLocation]);
+    setIsDisabled(!(post.caption && image && selectedLocation && post.address));
+  }, [post.caption, image, selectedLocation, post.address]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -91,7 +103,7 @@ const CreatePost = ({ setModalOpen }) => {
         setMessage("Image response didn't come!");
         return;
       }
-      console.log(selectedLocation);
+      console.log(post);
       // Create post in the backend
       const postResponse = await axios.post(
         "/api/createpost",
@@ -102,7 +114,6 @@ const CreatePost = ({ setModalOpen }) => {
               url: imageResponse.data.url,
               publicId: imageResponse.data.public_id,
             },
-
             location: selectedLocation, // Include location in the post
           },
         },
@@ -116,13 +127,13 @@ const CreatePost = ({ setModalOpen }) => {
         description: "Post is created successfully",
         variant: "success",
       });
-      if (fileInputRef.current) {
-        fileInputRef.current.value = null;
-      }
+      
+      const newRecommendedPosts = [postResponse.data.post, ...recommendedPosts];
+      dispatch(setRecommendedPosts(newRecommendedPosts));
+
       setPost({ ...post, caption: "", image: {} });
       setPreview(null);
       setSelectedLocation(null); // Clear location after post creation
-
     } catch (error) {
       console.error("Post creation failed:", error);
       setMessage("Failed to create post. Please try again.");
@@ -138,9 +149,20 @@ const CreatePost = ({ setModalOpen }) => {
   return (
     <div className=" m-auto ">
       {step === 1 && (
-        <div className=" flex flex-col items-center gap-3 border-2 w-[40vw] border-red-500">
+        <div className=" flex flex-col items-center gap-3 w-[40vw] ">
           <h1 className="font-bold text-7xl mb-8 text-center">Create Post</h1>
-          <div className="bg-green-300 w-full  border-2 border-zinc-500">
+          <div className="flex justify-end  w-full">
+            <Button
+              type="button"
+              disabled={!image}
+              variant="ghost"
+              onClick={handleNextStep}
+              className="text-blue-600 disabled:text-blue-500"
+            >
+              Next
+            </Button>
+          </div>
+          <div className=" w-full   ">
             <DragDropUploader
               onImageSelect={handleImageSelect}
               preview={preview}
@@ -148,14 +170,6 @@ const CreatePost = ({ setModalOpen }) => {
               className={"flex text-center w-full"}
             />
           </div>
-          <Button
-            type="button"
-            disabled={!image}
-            varient="ghost"
-            onClick={handleNextStep}
-          >
-            Next
-          </Button>
         </div>
       )}
 
@@ -164,20 +178,23 @@ const CreatePost = ({ setModalOpen }) => {
           <h1 className="font-bold text-7xl mb-8 text-center">
             Select Location
           </h1>
+          <div className="flex justify-end w-full">
+            <Button
+              type="button"
+              disabled={!selectedLocation}
+              variant="ghost"
+              onClick={handleNextStep}
+              className="text-blue-600 disabled:text-blue-500"
+            >
+              Next
+            </Button>
+          </div>
           <LeafletMap
             selectedLocation={selectedLocation}
             setSelectedLocation={setSelectedLocation}
             setPost={setPost}
             post={post}
           />
-          <Button
-            type="button"
-            disabled={!selectedLocation}
-            varient="ghost"
-            onClick={handleNextStep}
-          >
-            Next
-          </Button>
         </div>
       )}
 
@@ -199,7 +216,7 @@ const CreatePost = ({ setModalOpen }) => {
             width={400}
             height={600}
             alt="Preview"
-            className="col-span-1 border-2 border-red-500"
+            className="col-span-1 border-2 border-red-500 max-h-[28rem] object-cover"
           />
           {console.log(selectedLocation)}
           <div className="col-span-1">
@@ -223,8 +240,8 @@ const CreatePost = ({ setModalOpen }) => {
             <Input
               type="text"
               name="caption"
-              value={post.caption}
-              onChange={handleCaptionChange}
+              value={post.address}
+              onChange={handleAddressChange}
               placeholder="Set a Location"
               required
               className="mb-3"
@@ -240,8 +257,8 @@ const CreatePost = ({ setModalOpen }) => {
             />
             <Textarea
               placeholder="Description..."
-              value={post.caption}
-              onChange={handleCaptionChange}
+              value={post.description}
+              onChange={handleDescriptionChange}
             />
           </div>
         </div>

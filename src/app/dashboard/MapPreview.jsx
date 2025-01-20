@@ -53,7 +53,7 @@ const MapPreview = ({ posts, highlightedPostId }) => {
           <img 
           src="${img}" 
           alt="image" 
-          class=" h-full w-full object-cover aspect-square rounded-full bg-red-400" 
+          class=" h-full w-full object-cover aspect-square rounded-full" 
           />
           
             
@@ -80,7 +80,7 @@ const MapPreview = ({ posts, highlightedPostId }) => {
           L.marker([lat, lng], { icon: customIcon, zIndexOffset: 0 }).addTo(
             map
           );
-          console.log(post.caption);
+          
         });
 
       // Add marker for highlighted post
