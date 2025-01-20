@@ -10,15 +10,21 @@ const DashboardLayout = ({ children }) => {
     setNavToggle(navToggle ? false : true);
   };
   return (
-    <div className="grid grid-cols-7 h-screen w-screen overflow-x-hidden">
-      <div className="col-start-1 col-span-1  h-full hidden md:block">
+    <div className="flex">
+      <div className=" fixed md:hidden text-[3vw] h-16 w-[12vw] font-bold flex items-center justify-center cursor-pointer"><span>LOGO</span></div>
+
+      <div className="w-[15vw] h-screen hidden md:block top-0 left-0 fixed">
         <LeftSideBar setNavToggle={setNavToggle} />
       </div>
-      <div className="col-start-1 col-span-1  flex justify-center pt-9 md:hidden">
+      <div className=" flex justify-center items-center mt-16 mx-auto w-[12vw] h-14 fixed md:hidden ">
         {navToggle ? (
-          <IoMenuSharp size={24} onClick={menuClickHandler} />
+          <IoMenuSharp size={38} onClick={menuClickHandler} />
         ) : (
-          <div className="top-0 left-0 fixed z-10000 h-full bg-black text-white overflow-hidden ">
+          <div
+            className={`top-0 fixed z-10000 h-full w-[30vw] bg-[#343534] text-white ${
+              !navToggle ? "left-0" : "-left-[250px]"
+            }`}
+          >
             <div className="flex items-center justify-end px-3 pt-3  ">
               <IoCloseSharp size={24} onClick={menuClickHandler} className="" />
             </div>
@@ -29,7 +35,7 @@ const DashboardLayout = ({ children }) => {
         )}
       </div>
 
-      <div className="col-span-6 col-start-2 flex">{children}</div>
+      <div className=" ml-[12vw] md:ml-[15vw]">{children}</div>
 
       <Toaster />
     </div>

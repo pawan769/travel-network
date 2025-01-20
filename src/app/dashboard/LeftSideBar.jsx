@@ -25,8 +25,31 @@ const LeftSideBar = ({ setNavToggle }) => {
     { icon: <Search />, name: "Search", path: "search" },
     { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <MessageSquare />, name: "Messages", path: "messages" },
-    { icon: <Bell />, name: "Notifications", path: "notifications" },
+    // { icon: <Bell />, name: "Notifications", path: "notifications" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
+    {
+      icon: (
+        <div
+          className="cursor-pointer"
+          onClick={() => itemClickHandler({ path: "profile" })}
+        >
+          <Image
+            src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
+            alt="PP"
+            className="md:w-10 md:h-10 w-8 h-8 rounded-full"
+            height={10}
+            width={10}
+          />
+        </div>
+      ),
+      name: `${
+        session
+          ? session.user.name.charAt(0).toUpperCase() +
+            session.user.name.slice(1)
+          : "Profile"
+      }`,
+      path: "profile",
+    },
   ];
 
   const itemClickHandler = (elem) => {
@@ -39,35 +62,23 @@ const LeftSideBar = ({ setNavToggle }) => {
     }
   };
   return (
-    <div className="w-full flex flex-col gap-5  text-xl font-semibold overflow-hidden pt-7">
-      <div className="text-3xl  px-5 py-2  cursor-pointer">LOGO</div>
-
-      {list.map((elem, index) => {
-        return (
-          <div
-            key={index}
-            className="flex gap-3 items-center ml-3 rounded-xl px-2 py-3 hover:bg-zinc-200 cursor-pointer"
-            onClick={() => itemClickHandler(elem)}
-          >
-            <div className="md:mx-auto lg:mx-0">{elem.icon}</div>
-            <div className="md:hidden lg:block sm:block ">{elem.name}</div>
-          </div>
-        );
-      })}
-
-      <div
-        className="flex gap-3 px-4 items-center  md:justify-center lg:justify-start w-full mt-2 capitalize cursor-pointer"
-        onClick={() => itemClickHandler({ path: "profile" })}
-      >
-        <Image
-          src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
-          alt="PP"
-          className="w-10 h-10 rounded-full"
-          height={10}
-          width={10}
-        />
-        {session ? session.user.name : null}
+    <div className=" w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 ">
+      <div className="text-[6vw] md:text-[3vw] flex justify-center items-center   cursor-pointer "><span>LOGO</span></div>
+      <div className="flex flex-col gap-6 ">
+        {list.map((elem, index) => {
+          return (
+            <div
+              key={index}
+              className="flex gap-3 md:gap-5 items-center  rounded-xl px-3 py-2 hover:bg-zinc-200 cursor-pointer "
+              onClick={() => itemClickHandler(elem)}
+            >
+              <div className=" flex justify-center items-center md:size-10 size-5 "><span>{elem.icon}</span></div>
+              <div className="">{elem.name}</div>
+            </div>
+          );
+        })}
       </div>
+
       {isModalOpen && (
         <ModalExample open={isModalOpen} setModalOpen={setModalOpen} />
       )}

@@ -66,7 +66,10 @@ const Dashboard = () => {
 
       // Attach observer to all posts
       postRefs.current.forEach((ref) => {
-        observer.observe(ref);
+        if (ref instanceof Element) {
+          observer.observe(ref);
+        }
+        
       });
 
       return () => {
