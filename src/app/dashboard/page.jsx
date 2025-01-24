@@ -69,7 +69,6 @@ const Dashboard = () => {
         if (ref instanceof Element) {
           observer.observe(ref);
         }
-        
       });
 
       return () => {
@@ -82,6 +81,7 @@ const Dashboard = () => {
   }, [session, isInitialized]);
 
   const userRecommendationHandler = async () => {
+    console.log("clicked");
     try {
       const response = await axios.post(
         "./api/fetchRecommendations",
@@ -107,15 +107,14 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className="w-full">
-          <div className="flex items-center justify-between">
+        <div className="w-full ">
+          <div className="flex items-center justify-between ml-[22vw] md:ml-0">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
           </div>
           <div>
             <Button
               type="button"
               variant="outline"
-              className="text-white bg-black"
               onClick={userRecommendationHandler}
             >
               Get UserBased Recommendation

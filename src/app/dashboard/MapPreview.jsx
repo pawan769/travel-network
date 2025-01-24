@@ -105,7 +105,7 @@ const MapPreview = ({ posts, highlightedPostId }) => {
     }
   }, [posts, highlightedPostId, location, recommendedPosts]);
 
-  return <div ref={mapRef} className="h-[90vh] w-[40vw] fixed mt-5"></div>;
+  return <div ref={mapRef} className="h-[90vh] w-[40vw] fixed mt-5 -z-10"></div>;
 };
 
 export default dynamic(() => Promise.resolve(MapPreview), { ssr: false });

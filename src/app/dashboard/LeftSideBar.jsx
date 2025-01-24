@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ModalExample from "./create/dialog";
+import { IoMenuSharp } from "react-icons/io5";
 
-const LeftSideBar = ({ setNavToggle }) => {
+const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const router = useRouter();
@@ -54,16 +55,24 @@ const LeftSideBar = ({ setNavToggle }) => {
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
+      console.log("clicked");
+      // setNavToggle(true); //caused error on opening model
       setModalOpen(true);
-      setNavToggle(true);
     } else {
       router.replace(`/dashboard/${elem.path}`);
       setNavToggle(true);
     }
   };
   return (
-    <div className=" w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 ">
-      <div className="text-[6vw] md:text-[3vw] flex justify-center items-center   cursor-pointer "><span>LOGO</span></div>
+    <div className="w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 ">
+      <div className="text-[6vw] md:text-[3vw] flex justify-between px-3 items-center   cursor-pointer  ">
+        <span>LOGO</span>
+        <IoMenuSharp
+          size={38}
+          onClick={menuClickHandler}
+          className="md:hidden"
+        />
+      </div>
       <div className="flex flex-col gap-6 ">
         {list.map((elem, index) => {
           return (
@@ -72,12 +81,15 @@ const LeftSideBar = ({ setNavToggle }) => {
               className="flex gap-3 md:gap-5 items-center  rounded-xl px-3 py-2 hover:bg-zinc-200 cursor-pointer "
               onClick={() => itemClickHandler(elem)}
             >
-              <div className=" flex justify-center items-center md:size-10 size-5 "><span>{elem.icon}</span></div>
+              <div className=" flex justify-center items-center md:size-10 size-5 ">
+                <span>{elem.icon}</span>
+              </div>
               <div className="">{elem.name}</div>
             </div>
           );
         })}
       </div>
+      {console.log(isModalOpen)}
 
       {isModalOpen && (
         <ModalExample open={isModalOpen} setModalOpen={setModalOpen} />

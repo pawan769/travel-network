@@ -127,7 +127,7 @@ const CreatePost = ({ setModalOpen }) => {
         description: "Post is created successfully",
         variant: "success",
       });
-      
+
       const newRecommendedPosts = [postResponse.data.post, ...recommendedPosts];
       dispatch(setRecommendedPosts(newRecommendedPosts));
 
@@ -147,27 +147,37 @@ const CreatePost = ({ setModalOpen }) => {
   };
 
   return (
-    <div className=" m-auto ">
+    <div className="  bg-gray-100 text-black absolute top-[50vh] left-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl z-30 p-3 select-none ">
+      <div className="w-full flex justify-end px-2  ">
+        <div
+          className="w-10 h-10 flex items-center justify-center cursor-pointer "
+          onClick={() => setModalOpen(false)}
+        >
+          <span>X</span>
+        </div>
+      </div>
       {step === 1 && (
-        <div className=" flex flex-col items-center gap-3 w-[40vw] ">
-          <h1 className="font-bold text-7xl mb-8 text-center">Create Post</h1>
-          <div className="flex justify-end  w-full">
+        <div className=" flex flex-col items-center gap-2 min-w-[400px]  min-h-[400px]  ">
+          <h1 className="font-bold text-4xl lg:text-5xl text-center ">
+            Create Post
+          </h1>
+          <div className="flex justify-end  w-full ">
             <Button
               type="button"
               disabled={!image}
               variant="ghost"
               onClick={handleNextStep}
-              className="text-blue-600 disabled:text-blue-500"
+              className="text-blue-600 text-xl font-bold disabled:text-blue-500"
             >
               Next
             </Button>
           </div>
-          <div className=" w-full   ">
+          <div className=" h-full w-full  ">
             <DragDropUploader
               onImageSelect={handleImageSelect}
               preview={preview}
               setPreview={setPreview}
-              className={"flex text-center w-full"}
+              className={"flex text-center"}
             />
           </div>
         </div>
@@ -178,23 +188,26 @@ const CreatePost = ({ setModalOpen }) => {
           <h1 className="font-bold text-7xl mb-8 text-center">
             Select Location
           </h1>
-          <div className="flex justify-end w-full">
+          <div className="flex justify-end">
             <Button
               type="button"
               disabled={!selectedLocation}
               variant="ghost"
               onClick={handleNextStep}
-              className="text-blue-600 disabled:text-blue-500"
+              className="text-blue-600 text-xl font-bold disabled:text-blue-500"
             >
               Next
             </Button>
           </div>
-          <LeafletMap
-            selectedLocation={selectedLocation}
-            setSelectedLocation={setSelectedLocation}
-            setPost={setPost}
-            post={post}
-          />
+          <div>
+            <LeafletMap
+              selectedLocation={selectedLocation}
+              setSelectedLocation={setSelectedLocation}
+              setPost={setPost}
+              post={post}
+              className="w-full"
+            />
+          </div>
         </div>
       )}
 
@@ -210,21 +223,52 @@ const CreatePost = ({ setModalOpen }) => {
             )} */}
 
       {step === 3 && (
-        <div className="grid grid-cols-2 h-[60vh] w-[50vw] p-3">
-          <Image
-            src={preview}
-            width={400}
-            height={600}
-            alt="Preview"
-            className="col-span-1 border-2 border-red-500 max-h-[28rem] object-cover"
-          />
-          {console.log(selectedLocation)}
-          <div className="col-span-1">
+        <>
+          <h1 className="font-bold text-7xl mb-3 md:mb-8 text-center">
+            Add Description
+          </h1>
+          <div className="flex flex-col justify-center items-center md:grid md:grid-cols-2  w-[50vw] p-3 min-w-[400px]">
+            <div className="flex items-center justify-center">
+
+            <Image
+              src={preview}
+              width={400}
+              height={600}
+              alt="Preview"
+              className="md:col-span-1 border-2 min-w-[200px] max-h-[450px] object-cover"
+            />
+            </div>
+            
+            <div className="md:col-span-1 w-full sm:mt-3">
+              <Input
+                type="text"
+                name="caption"
+                value={post.address}
+                onChange={handleAddressChange}
+                placeholder="Name of the Place"
+                required
+                className="mb-3 p-4"
+              />
+              <Input
+                type="text"
+                name="caption"
+                value={post.caption}
+                onChange={handleCaptionChange}
+                placeholder="Please Enter Caption"
+                required
+                className="mb-3 p-4"
+              />
+              <Textarea
+                placeholder="Description..."
+                value={post.description}
+                onChange={handleDescriptionChange}
+                className=" h-12 md:h-36 overflow-y-auto focus-visible:ring-transparent"
+              />
             <div className="flex justify-end mb-2">
               <Button
                 type="submit"
                 disabled={isDisabled}
-                className={`transition-opacity duration-300 ", ${
+                className={`transition-opacity duration-300 border-2 border-black mt-10 ", ${
                   isDisabled ? "opacity-50 cursor-not-allowed" : "opacity-100"
                 }`}
                 onClick={submitHandler}
@@ -237,31 +281,9 @@ const CreatePost = ({ setModalOpen }) => {
                 )}
               </Button>
             </div>
-            <Input
-              type="text"
-              name="caption"
-              value={post.address}
-              onChange={handleAddressChange}
-              placeholder="Set a Location"
-              required
-              className="mb-3"
-            />
-            <Input
-              type="text"
-              name="caption"
-              value={post.caption}
-              onChange={handleCaptionChange}
-              placeholder="Please Enter Caption"
-              required
-              className="mb-3"
-            />
-            <Textarea
-              placeholder="Description..."
-              value={post.description}
-              onChange={handleDescriptionChange}
-            />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

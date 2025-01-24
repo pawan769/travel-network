@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import Image from "next/image";
 import { Upload } from "lucide-react";
 
 const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
+  
   const [isDragging, setIsDragging] = useState(false);
   // To store the image preview
 
@@ -20,6 +21,7 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
   };
 
   const handleDrop = (e) => {
+    console.log("dropped");
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
@@ -50,25 +52,25 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={clsx(
-        "border-2 border-dashed p-6 text-center rounded-md transition-all flex flex-col justify-center items-center w-full cursor-pointer mb-4 h-[390px] relative",
-        isDragging ? "border-blue-500 bg-blue-100" : "border-gray-300"
-      )}
+      
+      className={`border-2 border-dashed py-6 px-2   text-center  w-full min-h-[500px] rounded-md  flex flex-col justify-center items-center cursor-pointer relative
+        ${isDragging ? "border-blue-500 bg-blue-100" : "border-gray-300"}
+      `}
     >
       {!preview ? (
         <div className="flex flex-col items-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-lg text-gray-600">
             Drag and drop an image here, or click to select
           </p>
-          <Upload className="m-8 size-10" />
+          <Upload className="m-8 size-16" />
         </div>
       ) : (
         <Image
           src={preview}
           alt="Preview"
-          width={300} // Specify the width
-          height={320} // Specify the height
-          className="max-w-full  max-h-full mt-2 rounded-md object-contain m-auto"
+          width={500} // Specify the width
+          height={500} // Specify the height
+          className="min-w-[300px] max-h-[450px] mt-6 mb-4 rounded-md object-fill m-auto"
         />
       )}
       <input
@@ -80,7 +82,7 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
       />
       <label
         htmlFor="fileInput"
-        className="underline text-blue-600 cursor-pointer"
+        className="underline text-blue-600 text-lg cursor-pointer"
       >
         {preview ? "Change image" : "Select from computer"}
       </label>
