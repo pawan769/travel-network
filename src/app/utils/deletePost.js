@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const deletePost = async (postId, userId) => {
-  console.log("die");
   try {
     const response = await axios.post(
       "./api/deletepost",

@@ -108,10 +108,10 @@ const Dashboard = () => {
     <>
       {user ? (
         <div className="w-full ">
-          <div className="flex items-center justify-between ml-[22vw] md:ml-0">
+          {/* <div className="flex items-center justify-between ml-[22vw] md:ml-0 text-nowrap">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
-          </div>
-          <div>
+          </div> */}
+          <div className="ml-[22vw] md:ml-0">
             <Button
               type="button"
               variant="outline"

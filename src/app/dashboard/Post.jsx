@@ -37,9 +37,7 @@ const Post = ({ post }) => {
       setCommentLoading(false);
       return 0;
     }
-   
-      
-    
+
     if (newComment.trim() !== "") {
       const addedComment = await addComment(
         post._id,
@@ -136,7 +134,12 @@ const Post = ({ post }) => {
               <Edit2 className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={deletePostHandler}>
+            <DropdownMenuItem
+              onClick={deletePostHandler}
+              className={`${
+                session.user.id === post.author._id ? "" : "hidden"
+              }`}
+            >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>

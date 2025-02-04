@@ -28,8 +28,7 @@ const Home = () => {
       password: formData.password,
       redirect: false,
     });
-    // if (result) {
-    // }
+   
 
     if (result.error) {
       setError(result.error);

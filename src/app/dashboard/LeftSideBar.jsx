@@ -24,8 +24,8 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
   const list = [
     { icon: <House />, name: "Home", path: "/" },
     { icon: <Search />, name: "Search", path: "search" },
-    { icon: <Eye />, name: "Explore", path: "explore" },
-    { icon: <MessageSquare />, name: "Messages", path: "messages" },
+    // { icon: <Eye />, name: "Explore", path: "explore" },
+    // { icon: <MessageSquare />, name: "Messages", path: "messages" },
     // { icon: <Bell />, name: "Notifications", path: "notifications" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
     {
@@ -55,7 +55,6 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
-      console.log("clicked");
       // setNavToggle(true); //caused error on opening model
       setModalOpen(true);
     } else {
