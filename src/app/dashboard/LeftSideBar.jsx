@@ -63,7 +63,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
     }
   };
   return (
-    <div className="w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 ">
+    <div className="w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 z-30 ">
       <div className="text-[6vw] md:text-[3vw] flex justify-between px-3 items-center   cursor-pointer  ">
         <span>LOGO</span>
         <IoMenuSharp

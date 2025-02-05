@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import setLike from "../utils/setLike";
 import { Loader2 } from "lucide-react";
 import deletePost from "../utils/deletePost";
+import { IoLocation } from "react-icons/io5";
 
 const Post = ({ post }) => {
   const { data: session, status } = useSession();
@@ -103,11 +104,11 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className=" rounded-lg p-4 shadow-lg max-w-xl mx-auto my-2 h-[60vh] border-2 border-zinc-300 ">
+    <div className=" rounded-lg p-4 shadow-lg max-w-[95vw]  md:max-w-[40vw] mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4 ">
+      <div className="flex justify-between items-center mb-2 ">
         <div className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10 -z-10">
+          <Avatar className="h-10 w-10  md:z-30">
             <Image
               src={
                 "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
@@ -146,6 +147,14 @@ const Post = ({ post }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <div className="flex items-center justify-start  gap-2 mb-2">
+        <IoLocation className="size-4" />
+        <h2 className="w-full text-nowrap overflow-hidden capitalize  text-left ">
+          {post.address}
+        </h2>
+      </div>
+
       <div className=" flex h-[85%] gap-1 ">
         <div className=" flex flex-col w-[45%] ">
           {/* Post Image */}
@@ -155,7 +164,7 @@ const Post = ({ post }) => {
               alt="Post Image"
               width={300}
               height={300}
-              className="rounded-lg object-cover h-[100%] w-[100%]"
+              className="rounded-lg object-cover h-[350px] w-[300px]"
               priority
             />
           </div>
@@ -179,28 +188,33 @@ const Post = ({ post }) => {
           </div>
         </div>
         <div className="flex flex-col justify-between  w-[55%] ">
-          <div className="flex items-top space-x-3 text-sm  h-[20%] px-2">
-            <Avatar className="h-6 w-6 -z-10">
-              <Image
-                src={
-                  "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
-                }
-                alt="Profile Avatar"
-                width={30}
-                height={30}
-                className="rounded-full"
-              />
-            </Avatar>
+          <div>
+            <div className="flex items-top space-x-3 text-sm px-2">
+              <Avatar className="h-6 w-6 ">
+                <Image
+                  src={
+                    "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
+                  }
+                  alt="Profile Avatar"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+              </Avatar>
 
-            <p className="max-w-[80%] text-left break-words mb-2">
-              {post?.caption}
-            </p>
+              <div className="max-w-[80%] text-left break-words mb-2  font-semibold">
+                {post?.caption}
+              </div>
+            </div>
+            <div className="text-left pl-3 break-words overflow-auto max-h-20 w-full text-sm">
+              {post?.description}
+            </div>
           </div>
 
           {/* Comments Section */}
-          <div className="max-h-[80%] flex flex-col justify-between pb-2  px-1">
-            <h4 className="font-semibold mb-2 ">Comments</h4>
-            <div className="space-y-2 h-[60%] overflow-hidden">
+          <div className="max-h-[70%] flex flex-col justify-between pb-2  px-1">
+            <h4 className="font-semibold mb-2 mx-auto ">Comments</h4>
+            <div className="space-y-2 max-h-[50%] overflow-auto ">
               {post?.comments.map((data, index) => (
                 <div
                   key={index}

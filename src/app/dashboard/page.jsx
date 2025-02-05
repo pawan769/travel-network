@@ -107,7 +107,7 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className="w-full ">
+        <div className="w-full">
           {/* <div className="flex items-center justify-between ml-[22vw] md:ml-0 text-nowrap">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
           </div> */}
@@ -120,8 +120,8 @@ const Dashboard = () => {
               Get UserBased Recommendation
             </Button>
           </div>
-          <div className="grid grid-cols-6 text-center">
-            <div className="col-span-3">
+          <div className=" flex gap-8 text-center mt-5">
+            <div>
               {recommendedPosts.map((post, index) => (
                 <div
                   key={index}
@@ -133,8 +133,7 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            <div className="col-span-3">
-              {console.log(visiblePostId)}
+            <div className="border-red-400">
               <RightSideBar
                 visiblePosts={recommendedPosts}
                 highlightedPostId={visiblePostId}

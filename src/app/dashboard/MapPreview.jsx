@@ -80,7 +80,6 @@ const MapPreview = ({ posts, highlightedPostId }) => {
           L.marker([lat, lng], { icon: customIcon, zIndexOffset: 0 }).addTo(
             map
           );
-          
         });
 
       // Add marker for highlighted post
@@ -105,7 +104,12 @@ const MapPreview = ({ posts, highlightedPostId }) => {
     }
   }, [posts, highlightedPostId, location, recommendedPosts]);
 
-  return <div ref={mapRef} className="h-[90vh] w-[40vw] fixed mt-5 -z-10"></div>;
+  return (
+    <div
+      ref={mapRef}
+      className="h-[90vh] w-[40vw] fixed  -z-10 hidden md:block"
+    ></div>
+  );
 };
 
 export default dynamic(() => Promise.resolve(MapPreview), { ssr: false });
