@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: {},
   recommendedPosts: {},
+  mapToggle: false,
 };
 const appSlice = createSlice({
   name: "app",
@@ -22,8 +23,13 @@ const appSlice = createSlice({
         state.recommendedPosts = action.payload;
       }
     },
+    setMapToggle: (state, action) => {
+      if (JSON.stringify(state.mapToggle) !== JSON.stringify(action.payload)) {
+        state.mapToggle = action.payload;
+      }
+    },
   },
 });
-export const { setUser, setRecommendedPosts } = appSlice.actions;
+export const { setUser, setRecommendedPosts, setMapToggle } = appSlice.actions;
 
 export default appSlice.reducer;

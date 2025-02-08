@@ -55,7 +55,6 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
-      // setNavToggle(true); //caused error on opening model
       setModalOpen(true);
     } else {
       router.replace(`/dashboard/${elem.path}`);
@@ -88,7 +87,6 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
           );
         })}
       </div>
-      {console.log(isModalOpen)}
 
       {isModalOpen && (
         <ModalExample open={isModalOpen} setModalOpen={setModalOpen} />

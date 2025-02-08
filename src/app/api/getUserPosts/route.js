@@ -25,8 +25,8 @@ export const POST = async (req) => {
 
     if (posts.length === 0) {
       return new NextResponse(
-        JSON.stringify({ error: "No posts found", success: false }),
-        { status: 404 }
+        JSON.stringify({posts: [], message: "No posts found", success: false }),
+        { status: 200 }
       );
     }
 
@@ -35,7 +35,6 @@ export const POST = async (req) => {
       { status: 200 }
     );
   } catch (error) {
-    
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error", success: false }),
       { status: 500 }

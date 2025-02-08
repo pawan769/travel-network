@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const getRecommendedPosts = async (id) => {
+const fetchRecommendations = async (id) => {
   try {
     const response = await axios.post(
-      "./api/getRecommendedPosts",
+      "./api/fetchRecommendations",
       { id },
       {
         headers: {
@@ -16,4 +16,4 @@ const getRecommendedPosts = async (id) => {
     return response.data;
   }
 };
-export default getRecommendedPosts;
+export default fetchRecommendations;

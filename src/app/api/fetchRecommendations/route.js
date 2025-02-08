@@ -7,7 +7,8 @@ import recommendItemsForUser from "./recommendItemsForUser";
 
 export const POST = async (req) => {
   try {
-    const { userId } = await req.json();
+    const { id: userId } = await req.json();
+    console.log(userId);
 
     if (!userId) {
       return NextResponse.json({
@@ -22,12 +23,10 @@ export const POST = async (req) => {
     //creating itemUserMatrix
 
     const itemUserMatrix = await getItemUserMatrix();
-    console.log("itemUserMatrix:", itemUserMatrix);
 
-    //cosine similarity function or finding similarity between two posts based on user interaction
+    //cosine similarity function
 
     const similarityMatrix = calculateItemSimilarityMatrix(itemUserMatrix);
-    console.log("similarity matrix:", similarityMatrix);
 
     //get recommendation for user
 
@@ -37,22 +36,41 @@ export const POST = async (req) => {
       similarityMatrix
     );
 
-    // Fetch all recommended posts in one query
+    // Fetch all recommended posts
     const recommendedPosts = await Post.find({
       _id: { $in: recommendations },
     })
 
-      .populate({ path: "author", select: "name" }) // Populate author details
+      .populate({ path: "author", select: "name" })
       .populate({
-        path: "comments", // Populate comments
-        populate: { path: "commenter", select: "name" }, // Populate commenter details within comments
+        path: "comments",
+        populate: { path: "commenter", select: "name" },
       });
 
-    // Log or process the retrieved posts
+    const sortedPosts = recommendations.map((id) =>
+      recommendedPosts.find((post) => post._id.toString() === id)
+    );
+    
+
+    //fetch remaining posts
+
+    const remainingPosts = await Post.find({
+      _id: { $nin: recommendations },
+    })
+      .populate({ path: "author", select: "name" })
+      .populate({
+        path: "comments",
+        populate: { path: "commenter", select: "name" },
+      })
+      .sort({ createdAt: -1 });
+
+    //first recommended posts and then remaining posts
+
+    const finalRecommendation = [...sortedPosts, ...remainingPosts];
 
     return NextResponse.json(
       {
-        posts: recommendedPosts,
+        posts: finalRecommendation,
         message: "Fetching Recommendation successful",
         success: true,
       },

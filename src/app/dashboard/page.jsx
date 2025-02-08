@@ -1,26 +1,25 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
-
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setRecommendedPosts, setUser } from "../redux/slices/slices";
+import {
+  setMapToggle,
+  setRecommendedPosts,
+  setUser,
+} from "../redux/slices/slices";
 import getUser from "../utils/getUser";
 import Post from "./Post";
-import getRecommendedPosts from "../utils/getRecommendedPosts";
 import RightSideBar from "./rightSideBar";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
+import fetchRecommendations from "../utils/fetchRecommendations";
+import { IoClose } from "react-icons/io5";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
-  const router = useRouter();
-
   const user = useSelector((state) => state.app.user);
+  const mapToggle = useSelector((state) => state.app.mapToggle);
   const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
-
   const [isInitialized, setIsInitialized] = useState(false);
   const [visiblePostId, setVisiblePostId] = useState(null); // To track the currently visible post
 
@@ -35,7 +34,7 @@ const Dashboard = () => {
             dispatch(setUser(userDetails)); // Dispatch user data to Redux
           }
 
-          const recommendedPosts = await getRecommendedPosts(session.user.id);
+          const recommendedPosts = await fetchRecommendations(session.user.id);
           if (recommendedPosts) {
             dispatch(setRecommendedPosts(recommendedPosts)); // Dispatch recommended posts to Redux
           }
@@ -80,25 +79,10 @@ const Dashboard = () => {
     }
   }, [session, isInitialized]);
 
-  const userRecommendationHandler = async () => {
-    console.log("clicked");
-    try {
-      const response = await axios.post(
-        "./api/fetchRecommendations",
-        { userId: session.user.id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      console.log(response);
-      dispatch(setRecommendedPosts(response.data.posts));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // Display loading state until initialization is complete
   if (status === "loading" || !isInitialized) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-[80vw] h-screen flex items-center justify-center ">
         <Loader2 className="animate-spin" size={56} />
       </div>
     );
@@ -111,16 +95,8 @@ const Dashboard = () => {
           {/* <div className="flex items-center justify-between ml-[22vw] md:ml-0 text-nowrap">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
           </div> */}
-          <div className="ml-[22vw] md:ml-0">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={userRecommendationHandler}
-            >
-              Get UserBased Recommendation
-            </Button>
-          </div>
-          <div className=" flex gap-8 text-center mt-5">
+
+          <div className=" flex gap-8 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
             <div>
               {recommendedPosts.map((post, index) => (
                 <div
@@ -133,7 +109,17 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            <div className="border-red-400">
+            <div
+              className={`fixed z-40  top-0 md:top-7 md:right-0 ${
+                mapToggle ? "right-0" : "-right-[80vw]"
+              } transition-[right] duration-300 w-[70vw] h-screen px-2 pt-1 md:px-0 md:pt-0 md:pr-1  md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent `}
+            >
+              <div className="mb-4 flex justify-end px-6 md:hidden">
+                <IoClose
+                  size={32}
+                  onClick={() => dispatch(setMapToggle(false))}
+                />
+              </div>
               <RightSideBar
                 visiblePosts={recommendedPosts}
                 highlightedPostId={visiblePostId}

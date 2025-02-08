@@ -11,10 +11,11 @@ const getUserPosts = async (id) => {
         },
       }
     );
+    if (!response) return [];
 
-    return response.data.posts;
+    return response.data?.posts;
   } catch (error) {
-    return response.data;
+    return [];
   }
 };
 export default getUserPosts;
