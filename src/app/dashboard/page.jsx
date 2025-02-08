@@ -9,8 +9,8 @@ import {
   setUser,
 } from "../redux/slices/slices";
 import getUser from "../utils/getUser";
-import Post from "./Post";
-import RightSideBar from "./rightSideBar";
+import Post from "./Post.jsx";
+import RightSideBar from "./rightSideBar.jsx";
 import fetchRecommendations from "../utils/fetchRecommendations";
 import { IoClose } from "react-icons/io5";
 
