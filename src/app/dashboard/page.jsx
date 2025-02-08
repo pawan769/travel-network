@@ -15,6 +15,7 @@ import fetchRecommendations from "../utils/fetchRecommendations";
 import { IoClose } from "react-icons/io5";
 
 const Dashboard = () => {
+  console.log("dashboard ma ni aaiyo");
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
   const user = useSelector((state) => state.app.user);

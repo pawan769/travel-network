@@ -3,14 +3,13 @@
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  console.log("middleware executed");
   const token = request.cookies.get("next-auth.session-token"); // Get the session token from cookies
 
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
   const isDashboardPage = request.nextUrl.pathname.startsWith("/dashboard");
 
   // If user is not authenticated and trying to access a protected page (e.g., dashboard)
-  if (!token && isDashboardPage ) {
+  if (!token && isDashboardPage) {
     return NextResponse.redirect(new URL("/auth/signIn", request.url));
   }
 
@@ -20,6 +19,7 @@ export async function middleware(request) {
   }
 
   // Allow the request to continue
+  console.log("middleware sakkiyo");
   return NextResponse.next();
 }
 
