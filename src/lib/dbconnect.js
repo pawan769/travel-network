@@ -9,19 +9,16 @@ if (!MONGODB_URI) {
 }
 
 const dbConnect = async () => {
-  
   if (mongoose.connection.readyState === 1) {
-
     return;
   }
   try {
     await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     console.log("Mongoose connection is established successfully");
   } catch (error) {
-    throw new Error("Error connecting to mongoose", error);
+    throw new Error("Error connecting to mongoose");
   }
 };
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const getUser = async (id) => {
+  if (!id) return 0;
   try {
     const response = await axios.post(
       "./api/getuser",

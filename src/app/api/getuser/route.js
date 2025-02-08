@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   try {
     const { id } = await req.json(); // Extract the id from the request body
+    console.log(id);
 
     if (!id) {
       return new NextResponse(
@@ -26,26 +27,25 @@ export async function POST(req) {
           error: "User does not exist",
           success: false,
         }),
-        { status: 404 }
+        { status: 400 }
       );
     }
 
     const responseUser = {
-        _id:user._id,
-        name:user.name,
-        email:user.email
-    }
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    };
 
     return new NextResponse(
       JSON.stringify({
-        user:responseUser,
+        user: responseUser,
         message: "User Found",
         success: true,
       }),
       { status: 200 }
     );
   } catch (error) {
-    
     return new NextResponse(
       JSON.stringify({
         error: "Error occurred while fetching user data",
