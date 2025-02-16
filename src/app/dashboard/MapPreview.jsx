@@ -107,7 +107,7 @@ const MapPreview = ({ posts, highlightedPostId }) => {
   return (
     <div
       ref={mapRef}
-      className=" h-[90vh] w-full -z-10 md:h-[94vh] rounded-md right-0 top-0"
+      className=" h-[90vh] w-full z-10 md:h-[94vh] rounded-md right-0 top-0"
     ></div>
   );
 };
