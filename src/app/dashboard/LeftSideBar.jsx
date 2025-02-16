@@ -16,7 +16,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const list = [
     { icon: <House />, name: "Home", path: "/" },
-    { icon: <Eye />, name: "Explore", path: "explore" },
+    { icon: <Eye />, name: "Explore", path: "#explore" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
     {
       icon: (

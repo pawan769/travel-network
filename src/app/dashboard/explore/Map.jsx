@@ -1,10 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { Locate, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
 
 // Disable SSR for the map
 const Map = () => {
@@ -13,26 +11,37 @@ const Map = () => {
   const markersRef = useRef([]);
   const routeLayerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [customIcon, setCustomIcon] = useState(null);
+  const [isLeafletLoaded, setIsLeafletLoaded] = useState(false);
 
-  const customIcon = L.divIcon({
-    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path></svg>`,
-    className: "custom-map-icon",
-    iconSize: [70, 70],
-    iconAnchor: [10, 20],
-  });
-
+  // Dynamically import Leaflet and initialize the map
   useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current) {
+    if (typeof window === "undefined" || mapInstanceRef.current) {
+      return; // Exit if running on the server or map is already initialized
+    }
+
+    // Dynamically import Leaflet
+    import("leaflet").then((L) => {
+      // Initialize the map
       mapInstanceRef.current = L.map(mapRef.current).setView(
         [27.7172, 85.324],
         13
       );
 
+      // Add the tile layer
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(mapInstanceRef.current);
+
+      // Custom icon definition
+      const icon = L.divIcon({
+        html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path></svg>`,
+        className: "custom-map-icon",
+        iconSize: [70, 70],
+        iconAnchor: [10, 20],
+      });
+      setCustomIcon(icon);
 
       // Get User Location
       navigator.geolocation.getCurrentPosition(
@@ -51,12 +60,14 @@ const Map = () => {
         },
         (error) => console.error("Geolocation error:", error)
       );
-    }
+
+      // Mark Leaflet as loaded
+      setIsLeafletLoaded(true);
+    });
   }, []);
 
-  // Function to search for nearby tourist places
   const searchNearbyPlaces = async () => {
-    if (!mapInstanceRef.current) return;
+    if (!mapInstanceRef.current || !customIcon) return;
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -83,17 +94,23 @@ const Map = () => {
               icon: customIcon,
             })
               .addTo(mapInstanceRef.current)
-              .bindPopup(
-                `<b>${place.display_name}</b><br><button onclick="window.dispatchEvent(new CustomEvent('placeSelected', { detail: { lat: ${place.lat}, lon: ${place.lon} } }))">Go Here</button>`
-              );
-            markersRef.current.push(marker);
-          });
+              .bindPopup(() => {
+                const popupDiv = document.createElement("div");
+                popupDiv.innerHTML = `<b>${place.display_name}</b><br>`;
+                const button = document.createElement("button");
+                button.textContent = "Go Here";
+                button.onclick = () => {
+                  window.dispatchEvent(
+                    new CustomEvent("placeSelected", {
+                      detail: { lat: place.lat, lon: place.lon },
+                    })
+                  );
+                };
+                popupDiv.appendChild(button);
+                return popupDiv;
+              });
 
-          // Listen for custom event when user selects a place
-          window.addEventListener("placeSelected", (event) => {
-            const { lat, lon } = event.detail;
-            setSelectedPlace([lat, lon]);
-            drawRoute([latitude, longitude], [lat, lon]);
+            markersRef.current.push(marker);
           });
         } catch (error) {
           console.error("Error fetching tourist places:", error);
@@ -103,7 +120,6 @@ const Map = () => {
     );
   };
 
-  // Function to draw the shortest route
   const drawRoute = async (start, end) => {
     if (!mapInstanceRef.current) return;
 
@@ -150,5 +166,5 @@ const Map = () => {
   );
 };
 
-// Export with dynamic import to disable SSR
-export default dynamic(() => Promise.resolve(Map), { ssr: false });
+// Export the component
+export default Map;

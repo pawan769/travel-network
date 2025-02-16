@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import L from "leaflet";
 import { useEffect, useRef } from "react";
-import Map from "./Map";
+const Map = dynamic(() => import("./Map"), { ssr: false });
 
 const Explore = () => {
   const mapRef = useRef(null);
