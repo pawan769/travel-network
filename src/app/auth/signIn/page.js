@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 const Home = () => {
@@ -22,23 +22,25 @@ const Home = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+  
     const result = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
     });
-   
-
-    if (result.error) {
+  
+    console.log("Login Result:", result);
+  
+    if (result?.error) {
       setError(result.error);
       setIsLoading(false);
-    } else if (result) {
-      router.push("../dashboard");
     } else {
-      setIsLoading(false);
+      const session = await getSession();
+      console.log("Session after login:", session); // Check if session is set
+      router.push("/dashboard");
     }
   };
+  
   return (
     <section className=" h-screen min-w-[500px]  flex justify-center items-center py-44 px-10 md:px-44">
       <div className="flex flex-col items-center justify-center  min-w-[60%] min-h-[60%] flex-1 ">

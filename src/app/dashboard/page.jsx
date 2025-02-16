@@ -15,7 +15,6 @@ import fetchRecommendations from "../utils/fetchRecommendations";
 import { IoClose } from "react-icons/io5";
 
 const Dashboard = () => {
-  console.log("dashboard ma ni aaiyo");
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
   const user = useSelector((state) => state.app.user);
@@ -23,18 +22,21 @@ const Dashboard = () => {
   const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
   const [isInitialized, setIsInitialized] = useState(false);
   const [visiblePostId, setVisiblePostId] = useState(null); // To track the currently visible post
+  const [error, setError] = useState(null); // To handle errors
 
   const postRefs = useRef([]);
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (status === "authenticated" && session?.user?.id) {
       const initializeData = async () => {
         try {
+          // Fetch user details
           const userDetails = await getUser(session.user.id);
           if (userDetails) {
             dispatch(setUser(userDetails)); // Dispatch user data to Redux
           }
 
+          // Fetch recommended posts
           const recommendedPosts = await fetchRecommendations(session.user.id);
           if (recommendedPosts) {
             dispatch(setRecommendedPosts(recommendedPosts)); // Dispatch recommended posts to Redux
@@ -44,12 +46,15 @@ const Dashboard = () => {
           setIsInitialized(true);
         } catch (error) {
           console.error("Failed to fetch data:", error);
+          setError("Failed to fetch data. Please try again later.");
         }
       };
 
       initializeData(); // Fetch and set data
     }
+  }, [session, status, dispatch]);
 
+  useEffect(() => {
     if (isInitialized && recommendedPosts.length) {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -78,13 +83,22 @@ const Dashboard = () => {
         });
       };
     }
-  }, [session, isInitialized]);
+  }, [isInitialized, recommendedPosts]);
 
   // Display loading state until initialization is complete
   if (status === "loading" || !isInitialized) {
     return (
-      <div className="w-[80vw] h-screen flex items-center justify-center ">
+      <div className="w-[80vw] h-screen flex items-center justify-center">
         <Loader2 className="animate-spin" size={56} />
+      </div>
+    );
+  }
+
+  // Display error state if initialization fails
+  if (error) {
+    return (
+      <div className="w-[80vw] h-screen flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
@@ -92,12 +106,8 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className="w-full ">
-          {/* <div className="flex items-center justify-between ml-[22vw] md:ml-0 text-nowrap">
-            {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
-          </div> */}
-
-          <div className=" flex gap-8 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
+        <div className="w-full">
+          <div className="flex gap-8 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
             <div>
               {recommendedPosts.map((post, index) => (
                 <div
@@ -111,11 +121,11 @@ const Dashboard = () => {
               ))}
             </div>
             <div
-              className={`fixed z-20  top-0 md:top-7 md:right-0 ${
+              className={`fixed z-20 top-0 md:top-7 md:right-0 ${
                 mapToggle ? "right-0" : "-right-[80vw]"
-              } transition-[right] duration-300 w-[70vw] h-screen px-2 pt-1 md:px-0 md:pt-0 md:pr-1  md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent `}
+              } transition-[right] duration-300 w-[70vw] h-screen px-2 pt-1 md:px-0 md:pt-0 md:pr-1 md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent`}
             >
-              <div className="mb-4 flex justify-end px-6  md:hidden">
+              <div className="mb-4 flex justify-end px-6 md:hidden">
                 <IoClose
                   size={32}
                   onClick={() => dispatch(setMapToggle(false))}
