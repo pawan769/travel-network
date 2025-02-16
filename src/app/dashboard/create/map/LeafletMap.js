@@ -5,12 +5,9 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Locate } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Geocoder from "leaflet-control-geocoder"; // Correct import
+import "leaflet-control-geocoder/dist/Control.Geocoder.css"; // Import CSS
 
-// Import leaflet-control-geocoder
-import "leaflet-control-geocoder/dist/Control.Geocoder.css";
-
-
-// Disable SSR (Server-Side Rendering) for the map
 const LeafletMap = ({
   selectedLocation,
   setSelectedLocation,
@@ -19,8 +16,8 @@ const LeafletMap = ({
 }) => {
   const [position, setPosition] = useState(null);
   const [map, setMap] = useState({});
-  const mapRef = useRef(null); // To reference the map container
-  const markerRef = useRef(null); // To store the reference for the marker
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
   const customIcon = L.divIcon({
     html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path></svg>`,
@@ -28,9 +25,10 @@ const LeafletMap = ({
     iconSize: [70, 70],
     iconAnchor: [10, 20],
   });
+
   useEffect(() => {
     if (mapRef.current) {
-      const mapInstance = L.map(mapRef.current).setView([27.7172, 85.324], 13); // Default position
+      const mapInstance = L.map(mapRef.current).setView([27.7172, 85.324], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
@@ -38,18 +36,17 @@ const LeafletMap = ({
       }).addTo(mapInstance);
       setMap(mapInstance);
 
-      // Add search functionality (geocoder)
-      const geocoder = L.Control.Geocoder.nominatim();
+      // Initialize geocoder
+      const geocoder = Geocoder.nominatim(); // Correct usage
       L.Control.geocoder({
         collapsed: false,
         placeholder: "Search for a place",
         geocoder: geocoder,
-        createMarker: () => null,
+        defaultMarkGeocode: false, // Disable default marker
       })
         .addTo(mapInstance)
         .on("markgeocode", function (e) {
           const { lat, lng } = e.geocode.center;
-
           console.log(e);
 
           setPost({ ...post, address: e.geocode.name });
@@ -57,17 +54,17 @@ const LeafletMap = ({
           setSelectedLocation({ lat, lng });
           mapInstance.setView([lat, lng], 13);
 
+          // Remove existing markers
           mapInstance.eachLayer((layer) => {
             if (layer instanceof L.Marker) {
-              mapInstance.removeLayer(layer); // Remove the default geocoder marker
+              mapInstance.removeLayer(layer);
             }
           });
 
-          // Create a new marker with the custom icon
+          // Add a new marker
           if (markerRef.current) {
             markerRef.current.remove();
           }
-
           markerRef.current = L.marker([lat, lng], { icon: customIcon }).addTo(
             mapInstance
           );
@@ -77,11 +74,10 @@ const LeafletMap = ({
         const lat = e.latlng.lat;
         const lng = e.latlng.lng;
         updateMarker(mapInstance, lat, lng);
-
       });
 
       return () => {
-        mapInstance.remove(); // Cleanup the map on component unmount
+        mapInstance.remove();
       };
     }
   }, []);
@@ -113,7 +109,7 @@ const LeafletMap = ({
           const lng = positioning.coords.longitude;
 
           if (lat && lng) {
-            updateMarker(map, lat, lng); // Call updateMarker with valid lat/lng
+            updateMarker(map, lat, lng);
           } else {
             alert("Failed to retrieve valid coordinates.");
           }
@@ -123,9 +119,9 @@ const LeafletMap = ({
           alert("Failed to access geolocation. Allow GPS permission!");
         },
         {
-          enableHighAccuracy: true, // Request more precise location
-          maximumAge: 0, // Don't use cached results
-          timeout: 5000, // Set a timeout for the geolocation request
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000,
         }
       );
     } else {
@@ -133,19 +129,12 @@ const LeafletMap = ({
     }
   };
 
-  const handleSelectLocation = () => {
-    if (position) {
-      alert(
-        `Selected Location: Latitude: ${position.lat}, Longitude: ${position.lng}`
-      );
-    } else {
-      alert("Please click on the map or use the locate button.");
-    }
-  };
-
   return (
     <div className="border-2 relative ">
-      <div ref={mapRef} className="h-[40vh] w-[40vw] min-w-[390px] min-h-[400px] z-0" />
+      <div
+        ref={mapRef}
+        className="h-[40vh] w-[40vw] min-w-[390px] min-h-[400px] z-0"
+      />
       <Button
         onClick={handleLocate}
         className="absolute right-1 bottom-5 z-10 rounded-full hover:bg-black hover:text-white"
@@ -158,5 +147,4 @@ const LeafletMap = ({
   );
 };
 
-// Dynamically load the map and ensure it's client-side
 export default dynamic(() => Promise.resolve(LeafletMap), { ssr: false });
