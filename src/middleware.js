@@ -3,8 +3,11 @@
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  const token = request.cookies.get("next-auth.session-token"); // Get the session token from cookies
-
+  const cookieName =
+    process.env.NODE_ENV === "production"
+      ? "__Secure-next-auth.session-token"
+      : "next-auth.session-token";
+  const token = request.cookies.get(cookieName); // Get the session token from cookies
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
   const isDashboardPage = request.nextUrl.pathname.startsWith("/dashboard");
 
