@@ -2,14 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import {
-  Bell,
-  Eye,
-  House,
-  MessageSquare,
-  Search,
-  SquarePlus,
-} from "lucide-react";
+import { Eye, House, SquarePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ModalExample from "./create/dialog";
 import { IoMenuSharp } from "react-icons/io5";
@@ -23,10 +16,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const list = [
     { icon: <House />, name: "Home", path: "/" },
-    { icon: <Search />, name: "Search", path: "search" },
-    // { icon: <Eye />, name: "Explore", path: "explore" },
-    // { icon: <MessageSquare />, name: "Messages", path: "messages" },
-    // { icon: <Bell />, name: "Notifications", path: "notifications" },
+    { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
     {
       icon: (
@@ -76,10 +66,10 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
           return (
             <div
               key={index}
-              className="flex gap-3 md:gap-5 items-center  rounded-xl px-3 py-2 hover:bg-zinc-200 cursor-pointer "
+              className="flex gap-3 md:gap-5 items-center rounded-xl px-3 py-2 hover:bg-zinc-200 cursor-pointer "
               onClick={() => itemClickHandler(elem)}
             >
-              <div className=" flex justify-center items-center md:size-10 size-5 ">
+              <div className=" flex justify-center items-center md:size-10">
                 <span>{elem.icon}</span>
               </div>
               <div className="">{elem.name}</div>

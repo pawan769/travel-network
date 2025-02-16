@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 // Import leaflet-control-geocoder
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
-import LControlGeocoder from "leaflet-control-geocoder";
+
 
 // Disable SSR (Server-Side Rendering) for the map
 const LeafletMap = ({
@@ -78,18 +78,6 @@ const LeafletMap = ({
         const lng = e.latlng.lng;
         updateMarker(mapInstance, lat, lng);
 
-        //     geocoder.reverse(
-        //       [lat, lng],
-        //       mapInstance.options.crs.scale(mapInstance.getZoom()),
-        //       (results) => {
-        //         const place = results.length > 0 ? results[0] : null;
-        //         const placeName = place ? place.name : "Unknown location"; // Get the name of the place
-
-        //         // You can now use the place name
-        //         console.log("Place Name: ", placeName);
-        //         alert("You clicked on: " + placeName);
-        //       }
-        //     );
       });
 
       return () => {
@@ -166,13 +154,6 @@ const LeafletMap = ({
       >
         <Locate />
       </Button>
-      {/* <Button
-          onClick={handleSelectLocation}
-          className="mt-4 p-2 bg-blue-500 text-white rounded"
-          type="button"
-        >
-          Select this location
-        </Button> */}
     </div>
   );
 };

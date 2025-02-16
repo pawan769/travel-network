@@ -108,7 +108,7 @@ const Post = ({ post }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-2 ">
         <div className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10  md:z-30">
+          <Avatar className="h-10 w-10  md:z-20">
             <Image
               src={
                 "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"

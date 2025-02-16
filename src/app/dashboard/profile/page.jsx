@@ -28,9 +28,9 @@ const Profile = () => {
     await signOut({ redirect: true, callbackUrl: "/auth/signIn" });
   };
   return (
-    <div className="flex flex-col w-[100vw] md:w-[85vw] md:ml-[5vw] h-[100vh] mt-16 md:mt-0 -z-10">
-      <div className="flex justify-between  items-center w-[80%]">
-        <h1 className="text-[9vw] capitalize">My Posts</h1>
+    <div className="flex flex-col w-[100vw] gap-5 md:w-[85vw] md:ml-[5vw] mt-14 md:mt-0 -z-10">
+      <div className="flex justify-between  items-center w-full md:pr-[15vw] px-10 md:px-0">
+        <h1 className="text-[4rem] capitalize">My Posts</h1>
         <div
           className="cursor-pointer relative"
           onClick={() => {

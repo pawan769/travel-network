@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import dynamic from "next/dynamic";
-import "./mapPreview.css";
+
 import { useSelector } from "react-redux";
 
 const MapPreview = ({ posts, highlightedPostId }) => {
@@ -107,7 +107,7 @@ const MapPreview = ({ posts, highlightedPostId }) => {
   return (
     <div
       ref={mapRef}
-      className=" h-[90vh] w-full md:h-[94vh] rounded-md right-0 top-0"
+      className=" h-[90vh] w-full -z-10 md:h-[94vh] rounded-md right-0 top-0"
     ></div>
   );
 };

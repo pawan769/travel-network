@@ -147,7 +147,7 @@ const CreatePost = ({ setModalOpen }) => {
   };
 
   return (
-    <div className="  bg-gray-100 text-black absolute top-[50vh] left-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl z-30 p-3 select-none ">
+    <div className="  bg-gray-100 text-black absolute top-[50vh] left-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl  p-3 select-none z-50 ">
       <div className="w-full flex justify-end px-2  ">
         <div
           className="w-10 h-10 flex items-center justify-center cursor-pointer "

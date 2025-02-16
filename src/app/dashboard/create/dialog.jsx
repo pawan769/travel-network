@@ -22,7 +22,7 @@ const ModalExample = ({ open, setModalOpen }) => {
   return (
     <>
       <div
-        className="h-screen w-screen top-0 left-0 bg-[#000000b7] fixed z-20 flex justify-center items-center overflow-hidden"
+        className="h-screen w-screen top-0 left-0 bg-[#000000b7] fixed z-40 flex justify-center items-center overflow-hidden"
         onClick={() => setModalOpen(false)}
       ></div>
 

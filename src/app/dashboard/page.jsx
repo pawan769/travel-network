@@ -92,7 +92,7 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className="w-full">
+        <div className="w-full ">
           {/* <div className="flex items-center justify-between ml-[22vw] md:ml-0 text-nowrap">
             {isInitialized && <p>Welcome, {user.name} to the Dashboard</p>}
           </div> */}
@@ -111,11 +111,11 @@ const Dashboard = () => {
               ))}
             </div>
             <div
-              className={`fixed z-40  top-0 md:top-7 md:right-0 ${
+              className={`fixed z-20  top-0 md:top-7 md:right-0 ${
                 mapToggle ? "right-0" : "-right-[80vw]"
               } transition-[right] duration-300 w-[70vw] h-screen px-2 pt-1 md:px-0 md:pt-0 md:pr-1  md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent `}
             >
-              <div className="mb-4 flex justify-end px-6 md:hidden">
+              <div className="mb-4 flex justify-end px-6  md:hidden">
                 <IoClose
                   size={32}
                   onClick={() => dispatch(setMapToggle(false))}
