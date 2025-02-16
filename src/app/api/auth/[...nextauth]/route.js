@@ -74,7 +74,7 @@ export const authOptions = {
           ? "__Secure-next-auth.session-token" // More secure name in production
           : "next-auth.session-token", // Normal name in development
       options: {
-        httpOnly: true,
+        httpOnly: false,
         sameSite: "lax",
         path: "/",
         secure: process.env.NODE_ENV === "production", // Use secure cookies only in production
