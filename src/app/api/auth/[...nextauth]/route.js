@@ -21,10 +21,7 @@ export const authOptions = {
             return null;
           }
 
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+          const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
             console.log("Invalid password");
             return null;
@@ -56,22 +53,21 @@ export const authOptions = {
       session.user = token;
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      console.log("Redirecting to:", url, "Base URL:", baseUrl);
-      return url.startsWith(baseUrl) ? url : baseUrl;
-    },
+    // async redirect({ url, baseUrl }) {
+    //   console.log("Redirecting to:", url, "Base URL:", baseUrl);
+    //   return "/dashboard"; // Hardcode the redirect URL for testing
+    // },
   },
   pages: {
     signIn: "/auth/signIn",
   },
   cookies: {
     sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token"
-          : "next-auth.session-token",
+      name: process.env.NODE_ENV === "production"
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token",
       options: {
-        httpOnly: false,
+        httpOnly: false, // Secure the session cookie
         sameSite: "lax",
         path: "/",
         secure: process.env.NODE_ENV === "production",
