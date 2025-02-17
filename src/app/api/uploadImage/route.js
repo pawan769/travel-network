@@ -9,18 +9,17 @@ cloudinary.config({
 });
 
 export async function POST(req) {
-  
   try {
-    const { image, username } = await req.json();
+    const { image, username, folder } = await req.json();
 
     if (!image) {
       return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
 
     const uploadedImage = await cloudinary.uploader.upload(image, {
-      folder: `posts/${username}`, // Optional: Save in a specific folder
+      folder: `${folder}/${username}`, // Optional: Save in a specific folder
     });
-    
+
     if (!uploadedImage.public_id && !uploadedImage.secure_url) {
       return NextResponse.json(
         { error: "no cloudinary data" },

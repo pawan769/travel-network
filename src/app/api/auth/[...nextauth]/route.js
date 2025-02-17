@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
@@ -15,27 +14,23 @@ export const authOptions = {
       },
       authorize: async (credentials) => {
         await dbConnect();
-
         try {
-          // Find user by email
           const user = await User.findOne({ email: credentials.email });
           if (!user) {
             console.log("User not found");
             return null;
           }
 
-          // Validate password
           const isValid = await bcrypt.compare(
             credentials.password,
             user.password
           );
-
           if (!isValid) {
             console.log("Invalid password");
             return null;
           }
 
-          console.log("User authenticated successfully:", user);
+          console.log("User authenticated:", user);
           return { id: user._id, name: user.name, email: user.email };
         } catch (error) {
           console.error("Authentication error:", error);
@@ -51,7 +46,6 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log("JWT callback - user:", user);
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
@@ -59,9 +53,12 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log("Session callback - token:", token);
       session.user = token;
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      console.log("Redirecting to:", url, "Base URL:", baseUrl);
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   pages: {
@@ -71,13 +68,12 @@ export const authOptions = {
     sessionToken: {
       name:
         process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token" // More secure name in production
-          : "next-auth.session-token", // Normal name in development
+          ? "__Secure-next-auth.session-token"
+          : "next-auth.session-token",
       options: {
-        httpOnly: false,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production", // Use secure cookies only in production
+        secure: process.env.NODE_ENV === "production",
       },
     },
   },

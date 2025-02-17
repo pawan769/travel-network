@@ -1,13 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import clsx from "clsx";
 import Image from "next/image";
 import { Upload } from "lucide-react";
 
 const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
-  
   const [isDragging, setIsDragging] = useState(false);
   // To store the image preview
 
@@ -52,7 +50,6 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      
       className={`border-2 border-dashed py-6 px-2   text-center  w-full min-h-[500px] rounded-md  flex flex-col justify-center items-center cursor-pointer relative
         ${isDragging ? "border-blue-500 bg-blue-100" : "border-gray-300"}
       `}
@@ -84,7 +81,7 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
         htmlFor="fileInput"
         className="underline text-blue-600 text-lg cursor-pointer"
       >
-        {preview ? "Change image" : "Select from computer"}
+        {preview ? "Change Photo" : "Select from computer"}
       </label>
 
       {preview && (

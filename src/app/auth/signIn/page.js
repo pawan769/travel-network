@@ -22,15 +22,15 @@ const Home = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     const result = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
     });
-  
+
     console.log("Login Result:", result);
-  
+
     if (result?.error) {
       setError(result.error);
       setIsLoading(false);
@@ -40,14 +40,16 @@ const Home = () => {
       router.push("/dashboard");
     }
   };
-  
+
   return (
-    <section className=" h-screen min-w-[500px]  flex justify-center items-center py-44 px-10 md:px-44">
-      <div className="flex flex-col items-center justify-center  min-w-[60%] min-h-[60%] flex-1 ">
-        <h1 className="mb-4 text-2xl font-bold">Login</h1>
+    <section className=" h-screen min-w-[300px]  flex justify-center items-center py-44 px-10 md:px-44">
+      <div className="flex flex-col items-center justify-center  min-w-[300px] min-h-[60%] flex-1 p-3">
+        <h1 className="mb-4 text-4xl font-bold py-5 text-wrap">
+          Sign in to your account
+        </h1>
         <form
           onSubmit={submitHandler}
-          className="w-full max-w-[500px]  flex-1 flex flex-col  items-center"
+          className="max-w-[500px] w-full flex-1 flex flex-col  items-center"
         >
           <Input
             type="email"
@@ -68,7 +70,7 @@ const Home = () => {
             className="mb-4"
           />
 
-          <Button type="submit" className="w-44" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
           </Button>
           <div className="text-sm my-3 text-center">

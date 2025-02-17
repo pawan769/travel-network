@@ -7,7 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import DragDropUploader from "@/app/dashboard/create/DragDropUploader";
+import DragDropUploader from "@/components/DragDropUploader.jsx";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -89,6 +89,7 @@ const CreatePost = ({ setModalOpen }) => {
       const imageResponse = await axios.post("/api/uploadImage", {
         image: image,
         username: session.user.name,
+        folder:"posts"
       });
 
       if (imageResponse.data.url && imageResponse.data.public_id) {

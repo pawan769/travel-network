@@ -28,20 +28,16 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
             src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
             alt="PP"
             className="md:w-10 md:h-10 w-8 h-8 rounded-full"
-            height={10}
-            width={10}
+            height={40}
+            width={40}
           />
         </div>
       ),
-      name: `${
-        session
-          ? session.user.name.charAt(0).toUpperCase() +
-            session.user.name.slice(1)
-          : "Profile"
-      }`,
+      name: session ? session.user.name.split(" ")[0] : "Profile", // Extracts only the first name
       path: "profile",
     },
   ];
+  
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
@@ -72,7 +68,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
               <div className=" flex justify-center items-center md:size-10">
                 <span>{elem.icon}</span>
               </div>
-              <div className="">{elem.name}</div>
+              <div className="capitalize">{elem.name}</div>
             </div>
           );
         })}

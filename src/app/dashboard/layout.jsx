@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import LeftSideBar from "./LeftSideBar";
-import { Toaster } from "@/components/ui/toaster";
 import { IoLocationOutline, IoMenuSharp } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { setMapToggle } from "../redux/slices/slices";
 import { usePathname } from "next/navigation";
+import { Toaster } from "@/components/ui/sonner";
 
 const DashboardLayout = ({ children }) => {
   const [navToggle, setNavToggle] = useState(false);
