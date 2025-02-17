@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import ModalExample from "./create/dialog";
 import { IoMenuSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { CgProfile } from "react-icons/cg";
 
 const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -19,7 +18,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const list = [
     { icon: <House />, name: "Home", path: "/" },
-    { icon: <Eye />, name: "Explore", path: "#explore" },
+    { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
     {
       icon: (
