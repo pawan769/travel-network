@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
 
 const Map = () => {
   const mapRef = useRef(null);
@@ -13,6 +15,7 @@ const Map = () => {
   const routeLayerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [customIcon, setCustomIcon] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -27,11 +30,15 @@ const Map = () => {
 
     // Set custom icon
     const icon = L.divIcon({
-      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path></svg>`,
+      html: `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e41b23" stroke="black" stroke-width="0.5" class="w-12 h-12">
+          <path d="M12,2a8.009,8.009,0,0,0-8,8c0,3.255,2.363,5.958,4.866,8.819,0.792,0.906,1.612,1.843,2.342,2.791a1,1,0,0,0,1.584,0c0.73-.948,1.55-1.885,2.342-2.791C17.637,15.958,20,13.255,20,10A8.009,8.009,0,0,0,12,2Zm0,11a3,3,0,1,1,3-3A3,3,0,0,1,12,13Z"></path>
+        </svg>`,
       className: "custom-map-icon",
-      iconSize: [70, 70],
-      iconAnchor: [10, 20],
+      iconSize: [150, 150], // Increased size
+      iconAnchor: [19, 42],
     });
+
     setCustomIcon(icon);
 
     // Geolocation to set user's location
@@ -39,10 +46,11 @@ const Map = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation([latitude, longitude]);
+        mapInstance.setView([latitude, longitude], 14);
 
         L.marker([latitude, longitude], {
           icon: L.divIcon({
-            html: `<div class="bg-blue-500 w-6 h-6 rounded-full"></div>`,
+            html: `<div class="bg-blue-500 w-4 h-4 border border-black  rounded-full"></div>`,
             className: "",
           }),
         })
@@ -53,74 +61,101 @@ const Map = () => {
       (error) => console.error("Geolocation error:", error)
     );
 
-    // Event listener for the "placeSelected" event
     const handlePlaceSelected = (e) => {
       const { lat, lon } = e.detail;
       console.log("Selected place coordinates:", lat, lon);
-      // You can do more with the coordinates (like center the map on the selected place)
+
       mapInstance.setView([lat, lon], 14);
     };
 
-    // Attach the event listener
     window.addEventListener("placeSelected", handlePlaceSelected);
 
-    // Cleanup event listener on unmount
     return () => {
       window.removeEventListener("placeSelected", handlePlaceSelected);
     };
   }, [customIcon]);
 
-  // Empty dependency array ensures this runs once
-
   const searchNearbyPlaces = async () => {
+    setIsLoading(true);
     if (!mapInstanceRef.current || !customIcon || !userLocation) return;
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        mapInstanceRef.current.setView([latitude, longitude], 14);
+    const [latitude, longitude] = userLocation;
 
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=tourist&viewbox=${
-          longitude - 0.1
-        },${latitude - 0.1},${longitude + 0.1},${latitude + 0.1}&bounded=1`;
+    try {
+      const response = await axios.get(`/api/nearbyPosts`, {
+        params: { lat: latitude, lon: longitude },
+      });
+      const posts = response.data;
+      console.log(posts);
 
-        try {
-          const response = await fetch(url);
-          const places = await response.json();
+      markersRef.current.forEach((marker) =>
+        mapInstanceRef.current.removeLayer(marker)
+      );
+      markersRef.current = [];
 
-          markersRef.current.forEach((marker) =>
-            mapInstanceRef.current.removeLayer(marker)
-          );
-          markersRef.current = [];
+      posts.forEach((post) => {
+        if (
+          post.location &&
+          !isNaN(post.location.lat) &&
+          !isNaN(post.location.lng)
+        ) {
+          const marker = L.marker([post.location.lat, post.location.lng], {
+            icon: customIcon,
+          })
+            .addTo(mapInstanceRef.current)
+            .bindPopup(() => {
+              const popupDiv = document.createElement("div");
 
-          places.forEach((place) => {
-            const marker = L.marker([place.lat, place.lon], {
-              icon: customIcon,
-            })
-              .addTo(mapInstanceRef.current)
-              .bindPopup(() => {
-                const popupDiv = document.createElement("div");
-                popupDiv.innerHTML = `<b>${place.display_name}</b><br>`;
-                const button = document.createElement("button");
-                button.textContent = "Go Here";
-                button.onclick = () => {
-                  // Call drawRoute when the "Go Here" button is clicked
-                  drawRoute(userLocation, [place.lat, place.lon]);
-                  // Optionally, you can also center the map on the selected place
-                  mapInstanceRef.current.setView([place.lat, place.lon], 14);
-                };
-                popupDiv.appendChild(button);
-                return popupDiv;
-              });
+              // Create a card container
+              popupDiv.classList.add("popup-card");
 
-            markersRef.current.push(marker);
-          });
-        } catch (error) {
-          console.error("Error fetching tourist places:", error);
+              // Add image to the card
+              const imgElement = document.createElement("img");
+              imgElement.src = post.image.url;
+              imgElement.alt = post.caption;
+              imgElement.classList.add("popup-card-img");
+
+              // Add caption
+              const captionElement = document.createElement("h3");
+              captionElement.textContent = post.address;
+              captionElement.classList.add("popup-card-caption");
+
+              // Create a button for navigation
+              const button = document.createElement("button");
+              button.textContent = "Go Here";
+              button.classList.add("popup-card-btn");
+              button.onclick = () => {
+                drawRoute(userLocation, [post.location.lat, post.location.lng]);
+                mapInstanceRef.current.setView(
+                  [post.location.lat, post.location.lng],
+                  14
+                );
+
+                // Close the popup
+                if (mapInstanceRef.current) {
+                  mapInstanceRef.current.closePopup();
+                }
+              };
+
+              // Append elements to the popup card
+              popupDiv.appendChild(imgElement);
+              popupDiv.appendChild(captionElement);
+              popupDiv.appendChild(button);
+
+              return popupDiv;
+            });
+
+          markersRef.current.push(marker);
+        } else {
+          console.warn(`Invalid coordinates for post: ${post._id}`);
         }
-      },
-      (error) => console.error("Geolocation error:", error)
-    );
+      });
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching nearby posts:", error);
+    }
   };
 
   const drawRoute = async (start, end) => {
@@ -150,17 +185,35 @@ const Map = () => {
   };
 
   return (
-    <div className="border-2 relative">
-      <div ref={mapRef} className="h-[94vh] w-screen md:w-[84vw] z-10" />
+    <div className=" relative pt-10 md:pt-0 ">
+      <div
+        ref={mapRef}
+        className=" h-[88vh] md:h-[100vh] w-screen md:w-[84vw] z-10"
+      />
+      <div className="absolute top-0 md:top-5 left-0 md:left-20 z-10 flex px-3 md:px-0 w-[100vw]  md:w-[70vw] justify-between">
+        <div className="  bg-white border-2 border-black/50 md:border-none rounded-full flex items-center space-x-1 h-8 pl-2">
+          <div>
+            <Search size={16} />
+          </div>
+          <div>
+            <Input
+              className=" min-w-28 md:min-w-64 max-w-96 h-6 focus-visible:ring-transparent  border-none font-semibold placeholder:text-black "
+              onChange={() => console.log("changed0")}
+              placeholder="Search Places"
+            />
+          </div>
+        </div>
 
-      <div className="absolute right-10 top-5 z-10 flex gap-2">
-        <Button
-          className="rounded-full hover:bg-black hover:text-white"
-          variant="outline"
-          onClick={searchNearbyPlaces}
-        >
-          <Search className="mr-1" /> Nearby Tourist Places
-        </Button>
+        <div className=" flex gap-2">
+          <Button
+            className="rounded-full hover:bg-black hover:text-white w-[150px] border-2 border-black/50 md:border-none"
+            variant="outline"
+            onClick={searchNearbyPlaces}
+          >
+            <Search className="mr-1 " />{" "}
+            {isLoading ? <Loader2 className="animate-spin" /> : "Nearby Places"}
+          </Button>
+        </div>
       </div>
     </div>
   );

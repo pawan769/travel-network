@@ -65,3 +65,81 @@
   }
 }
 
+.popup-card {
+  width: fit-content;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.popup-card-img {
+  max-width: 200px;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+.popup-card-caption {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  padding-bottom: 5px;
+}
+
+.popup-card-btn {
+  padding: 8px 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.popup-card-btn:hover {
+  background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .popup-card {
+    width: 200px;
+  }
+
+  .popup-card-img {
+    height: 120px;
+  }
+
+  .popup-card-caption {
+    font-size: 16px;
+  }
+
+  .popup-card-description {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-card {
+    width: 150px;
+  }
+
+  .popup-card-img {
+    height: 100px;
+  }
+
+  .popup-card-caption {
+    font-size: 14px;
+  }
+
+  .popup-card-description {
+    font-size: 10px;
+    overflow: hidden;
+    width: 500px;
+  }
+}
