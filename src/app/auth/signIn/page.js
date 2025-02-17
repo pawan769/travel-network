@@ -37,7 +37,7 @@ const Home = () => {
     } else {
       const session = await getSession();
       console.log("Session after login:", session); // Check if session is set
-      router.push("/");
+      router.push("/dashboard");
     }
   };
 
