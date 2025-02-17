@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import Link from "next/link";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+
 const Home = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -15,10 +15,12 @@ const Home = () => {
     email: "",
     password: "",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -26,30 +28,37 @@ const Home = () => {
     const result = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
-      redirect: false,
+      redirect: false, // prevents automatic redirect
     });
 
     console.log("Login Result:", result);
 
     if (result?.error) {
-      setError(result.error);
+      setError(result.error); // Display error if login fails
       setIsLoading(false);
     } else {
-      const session = await getSession();
+      // When login is successful, manually handle the redirect
+      const session = await getSession(); // Ensure session is retrieved
       console.log("Session after login:", session); // Check if session is set
-      router.push("/dashboard");
+
+      if (session) {
+        router.push("/dashboard"); // Redirect to the dashboard
+      } else {
+        setError("Session not available, please try again.");
+        setIsLoading(false);
+      }
     }
   };
 
   return (
-    <section className=" h-screen min-w-[300px]  flex justify-center items-center py-44 px-10 md:px-44">
-      <div className="flex flex-col items-center justify-center  min-w-[300px] min-h-[60%] flex-1 p-3">
+    <section className="h-screen min-w-[300px] flex justify-center items-center py-44 px-10 md:px-44">
+      <div className="flex flex-col items-center justify-center min-w-[300px] min-h-[60%] flex-1 p-3">
         <h1 className="mb-4 text-4xl font-bold py-5 text-wrap">
           Sign in to your account
         </h1>
         <form
           onSubmit={submitHandler}
-          className="max-w-[500px] w-full flex-1 flex flex-col  items-center"
+          className="max-w-[500px] w-full flex-1 flex flex-col items-center"
         >
           <Input
             type="email"
