@@ -83,7 +83,7 @@ const Home = () => {
             {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
           </Button>
           <div className="text-sm my-3 text-center">
-            Don't have an account?
+            Donot have an account?
             <Link className="font-bold" href={"./register"}>
               Register
             </Link>
