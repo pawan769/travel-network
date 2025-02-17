@@ -40,10 +40,10 @@ const DashboardLayout = ({ children }) => {
       </div>
 
       <div
-        className={`w-[30vw] md:w-[15vw] h-screen md:block top-0  transition-[left] duration-300 z-30 ${
+        className={`w-[30vw] md:w-[15vw] h-screen md:block top-0  transition-all duration-300 z-30 ${
           navToggle
             ? "left-0  bg-white md:bg-transparent"
-            : "-left-[400px]  md:left-0  "
+            : "-left-[400px]  md:left-0 opacity-0 md:opacity-100  "
         } fixed`}
       >
         <LeftSideBar

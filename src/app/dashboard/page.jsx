@@ -107,7 +107,7 @@ const Dashboard = () => {
     <>
       {user ? (
         <div className="w-full">
-          <div className="flex gap-8 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
+          <div className="flex space-x-3 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
             <div>
               {recommendedPosts.map((post, index) => (
                 <div
@@ -121,11 +121,11 @@ const Dashboard = () => {
               ))}
             </div>
             <div
-              className={`fixed z-20 top-0 md:top-7 md:right-0 ${
-                mapToggle ? "right-0" : "-right-[80vw]"
-              } transition-[right] duration-300 w-[70vw] h-screen px-2 pt-1 md:px-0 md:pt-0 md:pr-1 md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent`}
+              className={`fixed z-20 right-0 md:bottom-2 md:right-0 ${
+                mapToggle ? "bottom-0" : "-bottom-[80vh]"
+              } transition-[bottom] duration-300 w-screen h-[70vh]  pt-1 md:px-0 md:pt-0 md:pr-1 md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent`}
             >
-              <div className="mb-4 flex justify-end px-6 md:hidden">
+              <div className="mb-2 flex  justify-end px-6 md:hidden">
                 <IoClose
                   size={32}
                   onClick={() => dispatch(setMapToggle(false))}

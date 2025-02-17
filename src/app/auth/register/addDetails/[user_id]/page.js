@@ -1,7 +1,6 @@
 "use client";
 import DragAndDropUploader from "@/components/DragDropUploader";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -122,10 +121,8 @@ const AddDetails = () => {
               onChange={handleChange}
               className=" p-2 border rounded-md w-full"
             >
-              {/* <option value="">Select Gender</option> */}
-              <option value="male" selected>
-                Male
-              </option>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>

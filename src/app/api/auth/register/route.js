@@ -15,14 +15,24 @@ export async function POST(req) {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return NextResponse.json({ error: "User exists already!" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User exists already!" },
+        { status: 400 }
+      );
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const user = await User.create({ name, email, password: hashedPassword });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      bio: "",
+      gender: "",
+      profilePic: {},
+    });
 
     return NextResponse.json(
       { message: "User registered successfully!", userId: user._id },

@@ -15,7 +15,7 @@ const RightSideBar = ({ visiblePosts, highlightedPostId }) => {
   if (!isClient || !visiblePosts) return <p>Loading map...</p>; // Fallback during SSR or loading
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-full">
       <MapPreview posts={visiblePosts} highlightedPostId={highlightedPostId} />
       {/* <MapBar posts={visiblePosts} highlightedPostId={highlightedPostId} /> */}
     </div>

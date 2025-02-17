@@ -104,7 +104,7 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className=" rounded-lg p-4 shadow-lg max-w-[95vw]  md:max-w-[40vw] mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
+    <div className=" rounded-lg p-4 shadow-lg max-w-[95vw] w-screen md:w-auto md:max-w-[40vw] mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
       {/* Header */}
       <div className="flex justify-between items-center mb-2 ">
         <div className="flex items-center space-x-3">
@@ -121,7 +121,7 @@ const Post = ({ post }) => {
           </Avatar>
           <h3 className="font-semibold capitalize">{post?.author.name}</h3>
         </div>
-        <DropdownMenu className="cursor-pointer">
+        <DropdownMenu className="cursor-pointer bg-blue-400">
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"

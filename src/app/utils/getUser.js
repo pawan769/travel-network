@@ -4,7 +4,7 @@ const getUser = async (id) => {
   if (!id) return 0;
   try {
     const response = await axios.post(
-      "./api/getuser",
+      "/api/getuser",
       { id },
       {
         headers: {

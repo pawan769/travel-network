@@ -66,7 +66,8 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
           src={preview}
           alt="Preview"
           width={500} // Specify the width
-          height={500} // Specify the height
+          height={500}
+          priority // Specify the height
           className="min-w-[300px] max-h-[450px] mt-6 mb-4 rounded-md object-fill m-auto"
         />
       )}

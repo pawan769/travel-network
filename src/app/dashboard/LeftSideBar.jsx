@@ -6,9 +6,12 @@ import { Eye, House, SquarePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ModalExample from "./create/dialog";
 import { IoMenuSharp } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { CgProfile } from "react-icons/cg";
 
 const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const user = useSelector((state) => state.app.user);
 
   const router = useRouter();
 
@@ -25,11 +28,16 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
           onClick={() => itemClickHandler({ path: "profile" })}
         >
           <Image
-            src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
+            src={
+              user.profilePic?.url
+                ? user.profilePic.url
+                : "/images/profilepic.jpg"
+            }
             alt="PP"
             className="md:w-10 md:h-10 w-8 h-8 rounded-full"
             height={40}
             width={40}
+            priority
           />
         </div>
       ),
@@ -37,7 +45,6 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
       path: "profile",
     },
   ];
-  
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
