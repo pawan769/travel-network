@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Eye, House, SquarePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import ModalExample from "./create/dialog";
 import { IoMenuSharp } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setModalOpen } from "../redux/slices/slices";
 
 const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
   const user = useSelector((state) => state.app.user);
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
@@ -47,23 +47,24 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
 
   const itemClickHandler = (elem) => {
     if (elem.path === "create") {
-      setModalOpen(true);
+      dispatch(setModalOpen(true));
+      setNavToggle(false);
     } else {
+      setNavToggle(false);
       router.replace(`/dashboard/${elem.path}`);
-      setNavToggle(true);
     }
   };
   return (
-    <div className="w-[30vw] md:w-[15vw] h-screen flex flex-col gap-5 text-[2.8vw] md:text-[1.3vw] font-semibold overflow-hidden pt-7 z-30 ">
-      <div className="text-[6vw] md:text-[3vw] flex justify-between px-3 items-center   cursor-pointer  ">
+    <div className=" h-screen sticky top-0 left-0 flex flex-col space-y-5 text-[3vw] max-w-[300px] md:text-[1.5vw] font-semibold overflow-hidden pt-7  bg-white">
+      <div className="text-5xl md:text-[3vw] flex justify-between px-3 w-full overflow-hidden  items-center cursor-pointer  ">
         <span>LOGO</span>
         <IoMenuSharp
-          size={38}
+          size={48}
           onClick={menuClickHandler}
-          className="md:hidden"
+          className="lg:hidden"
         />
       </div>
-      <div className="flex flex-col gap-6 ">
+      <div className="flex flex-col gap-6 w-full ">
         {list.map((elem, index) => {
           return (
             <div
@@ -71,7 +72,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
               className="flex gap-3 md:gap-5 items-center rounded-xl px-3 py-2 hover:bg-zinc-200 cursor-pointer "
               onClick={() => itemClickHandler(elem)}
             >
-              <div className=" flex justify-center items-center md:size-10">
+              <div className=" flex justify-center items-center size-10">
                 <span>{elem.icon}</span>
               </div>
               <div className="capitalize">{elem.name}</div>
@@ -79,10 +80,6 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
           );
         })}
       </div>
-
-      {isModalOpen && (
-        <ModalExample open={isModalOpen} setModalOpen={setModalOpen} />
-      )}
     </div>
   );
 };

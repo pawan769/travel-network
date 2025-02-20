@@ -5,6 +5,7 @@ const initialState = {
   user: {},
   recommendedPosts: {},
   mapToggle: false,
+  modalOpen: false,
 };
 const appSlice = createSlice({
   name: "app",
@@ -28,8 +29,14 @@ const appSlice = createSlice({
         state.mapToggle = action.payload;
       }
     },
+    setModalOpen: (state, action) => {
+      if (JSON.stringify(state.modalOpen) !== JSON.stringify(action.payload)) {
+        state.modalOpen = action.payload;
+      }
+    },
   },
 });
-export const { setUser, setRecommendedPosts, setMapToggle } = appSlice.actions;
+export const { setModalOpen, setUser, setRecommendedPosts, setMapToggle } =
+  appSlice.actions;
 
 export default appSlice.reducer;

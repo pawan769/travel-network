@@ -5,12 +5,17 @@ import Comment from "./Comment";
 const PostSchema = new mongoose.Schema(
   {
     caption: { type: String },
-    address: { type: String, required: [true, "please,enter the address"] },
+    address: { type: String, required: [true, "please, enter the address"] },
     description: { type: String },
-    image: {
-      url: { type: String, required: [true, "image is not provided"] },
-      publicId: { type: String, required: [true, "public id is not provided"] },
-    },
+    images: [
+      {
+        url: { type: String, required: [true, "image URL is not provided"] },
+        publicId: {
+          type: String,
+          required: [true, "public ID is not provided"],
+        },
+      },
+    ],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: User,
@@ -25,4 +30,5 @@ const PostSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 export default mongoose.models?.Post || mongoose.model("Post", PostSchema);

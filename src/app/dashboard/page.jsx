@@ -106,37 +106,57 @@ const Dashboard = () => {
   return (
     <>
       {user ? (
-        <div className="w-full">
-          <div className="flex space-x-3 text-center mt-12 md:mt-5 justify-center ml-2 md:ml-0">
-            <div>
-              {recommendedPosts.map((post, index) => (
-                <div
-                  key={index}
-                  ref={(el) => (postRefs.current[index] = el)}
-                  data-id={post?._id}
-                  className="post-item mb-4"
-                >
-                  <Post post={post} recommendedPosts={recommendedPosts} />
+        <div className=" w-fit max-w-screen ">
+          {/* Check if there are no posts */}
+          {recommendedPosts.length === 0 ? (
+            <div className="w-full h-[80vh] flex items-center justify-center">
+              <p className="text-lg text-gray-500">
+                No posts available at the moment.
+              </p>
+            </div>
+          ) : (
+            <div className="flex w-screen space-x-1 text-center h-screen mt-16 lg:mt-0  lg:justify-left  ">
+              <div className="w-screen  lg:max-w-[30vw] lg:min-w-[250px] lg:w-full ">
+                <div className=" overflow-y-scroll scrollbar-hide mx-auto h-screen lg:min-w-fit w-full px-2">
+                  {recommendedPosts.map((post, index) => (
+                    <div
+                      key={index}
+                      ref={(el) => (postRefs.current[index] = el)}
+                      data-id={post?._id}
+                      className="post-item mb-4"
+                    >
+                      <Post post={post} recommendedPosts={recommendedPosts} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div
-              className={`fixed z-20 right-0 md:bottom-2 md:right-0 ${
-                mapToggle ? "bottom-0" : "-bottom-[80vh]"
-              } transition-[bottom] duration-300 w-screen h-[70vh]  pt-1 md:px-0 md:pt-0 md:pr-1 md:w-[43vw] md:h-[95vh] bg-gray-100 md:bg-transparent`}
-            >
-              <div className="mb-2 flex  justify-end px-6 md:hidden">
-                <IoClose
-                  size={32}
-                  onClick={() => dispatch(setMapToggle(false))}
-                />
               </div>
-              <RightSideBar
-                visiblePosts={recommendedPosts}
-                highlightedPostId={visiblePostId}
-              />
+              {/* <div
+                className={`z-20 pt-1  h-[99%] w-[58%]  lg:block bg-green-500 ${
+                  mapToggle
+                    ? "fixed md:relative"
+                    : " hidden"
+                }   `}
+              > */}
+              <div className="h-full max-w-[55vw] z-20">
+                <div
+                  className={`fixed lg:relative lg:top-2   right-0  w-full lg:w-[55vw]  h-[70vh] lg:h-[98vh]  lg:bg-transparent transition-[bottom] duration-300 ${
+                    mapToggle ? "bottom-0" : "-bottom-[80vh]"
+                  }`}
+                >
+                  <div className="mb-2 flex justify-end px-6 lg:hidden ">
+                    <IoClose
+                      size={32}
+                      onClick={() => dispatch(setMapToggle(false))}
+                    />
+                  </div>
+                  <RightSideBar
+                    visiblePosts={recommendedPosts}
+                    highlightedPostId={visiblePostId}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <p>Loading user data...</p>

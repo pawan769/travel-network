@@ -19,7 +19,7 @@ const ProfilePost = ({ post }) => {
         </h2>
       </div>
       <Image
-        src={post.image.url}
+        src={post.images[0].url}
         width={100}
         height={100}
         alt={post.caption}
@@ -32,8 +32,8 @@ const ProfilePost = ({ post }) => {
         </div>
       </div>
       {modalOpen && (
-        <PostModal open={modalOpen} setModalOpen={setModalOpen} post={post}/>
-      ) }
+        <PostModal open={modalOpen} setModalOpen={setModalOpen} post={post} />
+      )}
     </div>
   );
 };

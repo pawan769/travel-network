@@ -1,6 +1,5 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+
 import L from "leaflet";
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
@@ -23,7 +22,7 @@ const Explore = () => {
   }, []);
 
   return (
-    <div className="w-screen mt-14 md:mt-0 md:my-1 z-10 md:w-[84vw] ">
+    <div className="w-screen mt-14 lg:mt-0 lg:my-1 z-10 lg:w-[84vw] ">
       <Map />
     </div>
   );

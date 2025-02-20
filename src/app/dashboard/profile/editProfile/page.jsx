@@ -1,6 +1,5 @@
 "use client";
 import getUser from "@/app/utils/getUser";
-import DragAndDropUploader from "@/components/DragDropUploader";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -10,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
+import Dragndrop from "./Dragndrop";
 
 const EditProfile = () => {
   const [details, setDetails] = useState({
@@ -111,8 +111,8 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="w-[83vw] mt-[5vh] md:mt-0 md:pr-[15vh]">
-      <div className="flex flex-col items-center justify-center w-fit  min-h-screen pt-10 px-2 mx-auto">
+    <div className=" w-screen lg:w-[83vw] mt-[5vh] lg:mt-0 lg:pr-[15vh]  mx-auto ">
+      <div className="flex flex-col items-center justify-center w-fit  min-h-screen pt-10 px-2 mx-auto ">
         <h1 className="mb-10 text-6xl font-bold w-full text-center">
           Edit Profile Details
         </h1>
@@ -121,7 +121,7 @@ const EditProfile = () => {
             <h2 className="font-semibold text-lg text-left w-full mb-2">
               Change Profile Picture
             </h2>
-            <DragAndDropUploader
+            <Dragndrop
               onImageSelect={handleImageSelect}
               preview={preview}
               setPreview={setPreview}

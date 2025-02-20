@@ -33,11 +33,11 @@ const Profile = () => {
     await signOut({ redirect: true, callbackUrl: "/auth/signIn" });
   };
   return (
-    <div className="flex flex-col  gap-5  mt-14 md:mt-7 -z-10">
+    <div className="flex flex-col  gap-5  mt-14 lg:mt-7 -z-10">
       <div className="flex flex-col">
         <section className=" flex flex-col ">
-          <div className=" py-2 flex flex-col md:flex-row md:items-center md:justify-between md:space-x-5 space-y-5 md:pr-10 ">
-            <div className="flex flex-col md:flex-row space-x-5 items-center">
+          <div className=" py-2 flex flex-col lg:flex-row lg:items-center lg:justify-between lg:space-x-5 space-y-5 lg:pr-10 ">
+            <div className="flex flex-col lg:flex-row space-x-5 items-center">
               <Image
                 src={
                   user.profilePic?.url
@@ -48,31 +48,31 @@ const Profile = () => {
                 height={100}
                 alt="pp"
                 priority
-                className="aspect-square rounded-full min-h-[150px] min-w-[150px] object-cover mx-auto md:mx-0"
+                className="aspect-square rounded-full min-h-[150px] min-w-[150px] object-cover mx-auto lg:mx-0"
               />
               <div className="flex flex-col space-y-3">
-                <h1 className="text-6xl  font-semibold capitalize  text-center md:text-start">
+                <h1 className="text-6xl  font-semibold capitalize  text-center lg:text-start">
                   {user.name}
                 </h1>
-                <p className="text-xl font-semibold w-full text-center md:text-left text-wrap">
+                <p className="text-xl font-semibold w-full text-center lg:text-left text-wrap">
                   {user.bio}
                 </p>
 
-                <h2 className="font-semibold text-md text-center w-full md:text-left">
+                <h2 className="font-semibold text-lg text-center w-full lg:text-left">
                   {`${posts ? posts.length : 0} posts`}
                 </h2>
               </div>
             </div>
             <Link
               href={`./profile/editProfile`}
-              className="w-fit mx-auto bg-black/90 text-white py-2 px-4  text-md font-semibold rounded-md hover:bg-black/70"
+              className="w-fit mx-auto bg-black/90 text-white py-2 px-4  text-lg font-semibold rounded-lg hover:bg-black/70"
             >
               Edit Profile
             </Link>
           </div>
         </section>
-        <hr className="border border-black/50 my-2 md:mr-10" />
-        <div className="flex justify-between items-center w-full pr-10 ">
+        <hr className="border border-black/50 my-2 lg:mr-10" />
+        <div className="flex justify-between items-center w-full pr-10 px-2 ">
           <h1 className="text-[3rem] capitalize">My Posts</h1>
           <div
             className="cursor-pointer relative"
@@ -96,7 +96,7 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="flex  w-[100vw] md:w-[85vw] h-full  justify-evenly md:justify-start md:gap-8 gap-3 pr-3 flex-wrap ">
+      <div className="flex  w-[100vw] lg:w-[85vw] h-full  justify-evenly lg:justify-start lg:gap-8 gap-3 pr-3 flex-wrap ">
         {posts?.length != 0 ? (
           posts.map((post, index) => {
             return <ProfilePost post={post} key={index} />;

@@ -21,7 +21,7 @@ const Map = () => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
     // Initialize the map only when mapRef.current is available
-    const mapInstance = L.map(mapRef.current).setView([28.02, 48.55], 13);
+    const mapInstance = L.map(mapRef.current).setView([27.7172, 85.324], 13);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -50,7 +50,7 @@ const Map = () => {
 
         L.marker([latitude, longitude], {
           icon: L.divIcon({
-            html: `<div class="bg-blue-500 w-4 h-4 border border-black  rounded-full"></div>`,
+            html: `<div class="bg-blue-500 w-4 h-4 border border-black rounded-full"></div>`,
             className: "",
           }),
         })
@@ -58,7 +58,27 @@ const Map = () => {
           .bindPopup("You are here")
           .openPopup();
       },
-      (error) => console.error("Geolocation error:", error)
+      (error) => {
+        console.error("Geolocation error:", error);
+
+        // Show error message based on the error code
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert(
+              "Location permission denied. Please enable it in your browser settings."
+            );
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            alert("Request timed out. Try again.");
+            break;
+          default:
+            alert("An unknown error occurred.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
 
     const handlePlaceSelected = (e) => {
@@ -85,15 +105,23 @@ const Map = () => {
       const response = await axios.get(`/api/nearbyPosts`, {
         params: { lat: latitude, lon: longitude },
       });
-      const posts = response.data;
-      console.log(posts);
 
+      const posts = response.data;
+      console.log("Nearby posts:", posts);
+
+      if (!posts.length) {
+        alert("No nearby places found!");
+        setIsLoading(false);
+        return;
+      }
+
+      // Remove old markers
       markersRef.current.forEach((marker) =>
         mapInstanceRef.current.removeLayer(marker)
       );
       markersRef.current = [];
 
-      posts.forEach((post) => {
+      posts.forEach((post, index) => {
         if (
           post.location &&
           !isNaN(post.location.lat) &&
@@ -106,21 +134,17 @@ const Map = () => {
             .bindPopup(() => {
               const popupDiv = document.createElement("div");
 
-              // Create a card container
               popupDiv.classList.add("popup-card");
 
-              // Add image to the card
               const imgElement = document.createElement("img");
-              imgElement.src = post.image.url;
+              imgElement.src = post.images[0].url;
               imgElement.alt = post.caption;
               imgElement.classList.add("popup-card-img");
 
-              // Add caption
               const captionElement = document.createElement("h3");
               captionElement.textContent = post.address;
               captionElement.classList.add("popup-card-caption");
 
-              // Create a button for navigation
               const button = document.createElement("button");
               button.textContent = "Go Here";
               button.classList.add("popup-card-btn");
@@ -130,14 +154,9 @@ const Map = () => {
                   [post.location.lat, post.location.lng],
                   14
                 );
-
-                // Close the popup
-                if (mapInstanceRef.current) {
-                  mapInstanceRef.current.closePopup();
-                }
+                mapInstanceRef.current.closePopup();
               };
 
-              // Append elements to the popup card
               popupDiv.appendChild(imgElement);
               popupDiv.appendChild(captionElement);
               popupDiv.appendChild(button);
@@ -150,6 +169,14 @@ const Map = () => {
           console.warn(`Invalid coordinates for post: ${post._id}`);
         }
       });
+
+      // Automatically set view to the first post
+      if (posts.length > 0) {
+        mapInstanceRef.current.setView(
+          [posts[0].location.lat, posts[0].location.lng],
+          14
+        );
+      }
 
       setIsLoading(false);
     } catch (error) {
@@ -185,28 +212,28 @@ const Map = () => {
   };
 
   return (
-    <div className=" relative pt-10 md:pt-0 ">
+    <div className=" relative pt-10 lg:pt-0 ">
       <div
         ref={mapRef}
-        className=" h-[88vh] md:h-[100vh] w-screen md:w-[84vw] z-10"
+        className=" h-[88vh] lg:h-[100vh] w-screen lg:w-[84vw] z-10"
       />
-      <div className="absolute top-0 md:top-5 left-0 md:left-20 z-10 flex px-3 md:px-0 w-[100vw]  md:w-[70vw] justify-between">
+      <div className="absolute top-0 lg:top-5 left-0 lg:left-20 z-10 flex px-3 lg:px-0 w-[100vw] lg:w-[70vw] justify-between">
         <div className="  bg-white border-2 border-black/50 md:border-none rounded-full flex items-center space-x-1 h-8 pl-2">
           <div>
             <Search size={16} />
           </div>
           <div>
             <Input
-              className=" min-w-28 md:min-w-64 max-w-96 h-6 focus-visible:ring-transparent  border-none font-semibold placeholder:text-black "
+              className=" min-w-28 lg:min-w-64 max-w-96 h-6 focus-visible:ring-transparent  border-none font-semibold placeholder:text-black "
               onChange={() => console.log("changed0")}
               placeholder="Search Places"
             />
           </div>
         </div>
 
-        <div className=" flex gap-2">
+        <div className=" flex gap-2 ">
           <Button
-            className="rounded-full hover:bg-black hover:text-white w-[150px] border-2 border-black/50 md:border-none"
+            className="rounded-full hover:bg-black hover:text-white w-[150px] border-2 flex justify-start border-black/50 md:border-none"
             variant="outline"
             onClick={searchNearbyPlaces}
           >

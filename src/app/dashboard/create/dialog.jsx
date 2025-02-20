@@ -2,8 +2,11 @@
 
 import { useEffect } from "react";
 import CreatePost from "./page";
+import { useDispatch } from "react-redux";
+import { setModalOpen } from "@/app/redux/slices/slices";
 
-const ModalExample = ({ open, setModalOpen }) => {
+const ModalExample = ({ open }) => {
+  const dispatch = useDispatch();
   useEffect(() => {
     if (open) {
       document.body.classList.add("overflow-hidden");
@@ -22,8 +25,8 @@ const ModalExample = ({ open, setModalOpen }) => {
   return (
     <>
       <div
-        className="h-screen w-screen top-0 left-0 bg-[#000000b7] fixed z-40 flex justify-center items-center overflow-hidden"
-        onClick={() => setModalOpen(false)}
+        className=" top-0 left-0 bg-black/60 fixed inset-0 z-50 flex justify-center items-center overflow-hidden"
+        onClick={() => dispatch(setModalOpen(false))}
       ></div>
 
       <CreatePost setModalOpen={setModalOpen} />

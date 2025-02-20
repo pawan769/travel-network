@@ -73,6 +73,9 @@
   background-color: white;
   text-align: center;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
 }
 
 .popup-card-img {
@@ -89,6 +92,9 @@
   font-weight: bold;
   color: #333;
   padding-bottom: 5px;
+  width: 200px;
+  max-height: 50px;
+  overflow: hidden;
 }
 
 .popup-card-btn {
@@ -135,6 +141,7 @@
 
   .popup-card-caption {
     font-size: 14px;
+    width: 200px;
   }
 
   .popup-card-description {
@@ -142,4 +149,11 @@
     overflow: hidden;
     width: 500px;
   }
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
 }
