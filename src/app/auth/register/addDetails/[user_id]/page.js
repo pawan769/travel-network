@@ -1,4 +1,5 @@
 "use client";
+import Dragndrop from "@/app/dashboard/profile/editProfile/Dragndrop";
 import DragAndDropUploader from "@/components/DragDropUploader";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -89,7 +90,7 @@ const AddDetails = () => {
           <h2 className="font-semibold text-lg text-left w-full mb-2">
             Choose Profile Picture
           </h2>
-          <DragAndDropUploader
+          <Dragndrop
             onImageSelect={handleImageSelect}
             preview={preview}
             setPreview={setPreview}

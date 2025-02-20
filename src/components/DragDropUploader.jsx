@@ -124,7 +124,7 @@ const DragAndDropUploader = ({ onImageSelect, setPreview, preview }) => {
         onChange={handleFileInputChange}
         className="hidden"
         id="fileInput"
-        disabled={preview.length >= MAX_IMAGES} // Prevents further selection
+        disabled={preview?.length >= MAX_IMAGES} // Prevents further selection
       />
       <label
         htmlFor="fileInput"
