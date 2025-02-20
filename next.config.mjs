@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  api: {
+    bodyParser: {
+      sizeLimit: "11mb", // Adjust this value as needed, for example, 50MB
+    },
+  },
   images: {
     remotePatterns: [
       {

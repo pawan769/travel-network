@@ -130,9 +130,7 @@ const Post = ({ post }) => {
         <div className="flex items-center space-x-3">
           <Avatar className="h-8 w-8  md:z-20  flex items-center justify-center -z-20 ">
             <Image
-              src={
-                "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600"
-              }
+              src={post.author.profilePic.url}
               alt="Profile Avatar"
               width={20}
               height={20}
