@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  api: {
-    bodyParser: {
-      sizeLimit: "11mb", // Adjust this value as needed, for example, 50MB
-    },
-  },
   images: {
     remotePatterns: [
       {
@@ -17,7 +12,7 @@ const nextConfig = {
         protocol: "https", // Use 'http' if applicable
         hostname: "res.cloudinary.com", // Replace with your image's domain
         port: "", // Optional, leave empty if not needed
-        pathname: "/**", // Use `/**` to match all paths under this hostname
+        pathname: "/drkl3ydge/**", // Use `/**` to match all paths under this hostname
       },
       {
         protocol: "https", // Ensure protocol is https for OpenStreetMap

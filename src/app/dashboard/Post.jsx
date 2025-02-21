@@ -26,6 +26,7 @@ import { IoLocation } from "react-icons/io5";
 import { useEffect } from "react";
 
 const Post = ({ post }) => {
+  console.log("recommended Posts:",post);
   const { data: session, status } = useSession();
   const [newComment, setNewComment] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
@@ -122,6 +123,7 @@ const Post = ({ post }) => {
       setCurrentImageIndex((prev) => prev + 1);
     }
   };
+  console.log(post.author);
 
   return (
     <div className="rounded-lg p-4 shadow-lg w-fit space-y-1  lg:w-fit  mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
@@ -130,11 +132,16 @@ const Post = ({ post }) => {
         <div className="flex items-center space-x-3">
           <Avatar className="h-8 w-8  md:z-20  flex items-center justify-center -z-20 ">
             <Image
-              src={post.author.profilePic.url}
+              src={
+                post.author.profilePic?.url
+                  ? post.author.profilePic.url
+                  : "/images/profilepic.jpg"
+              }
               alt="Profile Avatar"
               width={20}
               height={20}
               className="rounded-full size-8 "
+              priority
             />
           </Avatar>
           <h3 className="font-semibold capitalize">{post?.author.name}</h3>

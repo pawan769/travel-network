@@ -18,12 +18,11 @@ export async function POST(req) {
 
     const uploadedImage = await cloudinary.uploader.upload(image, {
       folder: `${folder}/${username}`,
-      quality: "auto:low", // Lower quality for smaller size
+      quality: "70", // Lower quality for smaller size
       format: "webp", // Convert to webp for better compression
       width: 1080, // Resize image width
       crop: "limit", // Prevent upscaling
     });
-    
 
     if (!uploadedImage.public_id && !uploadedImage.secure_url) {
       return NextResponse.json(

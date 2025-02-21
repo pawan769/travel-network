@@ -7,6 +7,7 @@ const ProfilePost = ({ post }) => {
   const clickHandler = () => {
     setModalOpen(!modalOpen);
   };
+  console.log("post images:", post.images[0]);
   return (
     <div
       className="bg-gray-100 flex flex-col gap-2 p-1 h-[290px] border-2 border-gray-300 cursor-pointer rounded-md"

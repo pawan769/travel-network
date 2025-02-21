@@ -125,6 +125,7 @@ const Dashboard = () => {
                       data-id={post?._id}
                       className="post-item mb-4"
                     >
+                      {console.log(post)}
                       <Post post={post} recommendedPosts={recommendedPosts} />
                     </div>
                   ))}

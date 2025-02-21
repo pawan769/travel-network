@@ -9,7 +9,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import DragDropUploader from "@/components/DragDropUploader.jsx";
 
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 // Leaflet imports
 import dynamic from "next/dynamic";
@@ -45,7 +45,6 @@ const CreatePost = ({}) => {
   const recommendedPosts = useSelector((store) => store.app.recommendedPosts);
 
   const fileInputRef = useRef(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     if (session) {
@@ -96,7 +95,6 @@ const CreatePost = ({}) => {
             username: session.user.name,
             folder: "posts",
           });
-          
 
           if (response.data.url && response.data.public_id) {
             return {
@@ -123,13 +121,9 @@ const CreatePost = ({}) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log("postresponse:",postResponse);
 
       setMessage(postResponse.data.message || "Post created successfully!");
-      toast({
-        description: "Post is created successfully",
-        variant: "success",
-      });
+      toast("Post created successfully", { variant: "success" });
 
       const newRecommendedPosts = [postResponse.data.post, ...recommendedPosts];
       dispatch(setRecommendedPosts(newRecommendedPosts));

@@ -22,7 +22,6 @@ export async function middleware(request) {
   }
 
   // Allow the request to continue
-  console.log("middleware sakkiyo");
   return NextResponse.next();
 }
 

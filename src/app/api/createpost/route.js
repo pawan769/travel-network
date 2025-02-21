@@ -11,7 +11,7 @@ export async function POST(req) {
     const postData = newPost.post || {}; // Prevents destructuring errors
     const { author, caption, images, location, address, description } =
       postData;
-      console.log(images);
+      
 
     // Check if images is an array and has at least one image
     if (!Array.isArray(images) || images.length === 0) {

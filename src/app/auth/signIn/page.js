@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -10,11 +10,21 @@ import { Loader2 } from "lucide-react";
 const Home = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [session, setSession] = useState(null); // Track session state
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if a session already exists when the component mounts
+    const fetchSession = async () => {
+      const sessionData = await getSession();
+      setSession(sessionData);
+    };
+    fetchSession();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,18 +47,27 @@ const Home = () => {
       setError(result.error); // Display error if login fails
       setIsLoading(false);
     } else {
-      // When login is successful, manually handle the redirect
-      const session = await getSession(); // Ensure session is retrieved
-      console.log("Session after login:", session); // Check if session is set
+      // Check if session is available after sign-in
+      const sessionData = await getSession();
+      setSession(sessionData); // Update the session state
+      console.log("Session after login:", sessionData);
 
-      if (session) {
-        router.push("/dashboard"); // Redirect to the dashboard
+      setTimeout(() => {}, 3000);
+
+      if (sessionData) {
+        router.push("/dashboard"); // Redirect to the dashboard if session exists
       } else {
         setError("Session not available, please try again.");
         setIsLoading(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard"); // If session exists, redirect immediately
+    }
+  }, [session, router]);
 
   return (
     <section className="h-screen min-w-[300px] flex justify-center items-center py-44 px-10 md:px-44">
@@ -83,7 +102,7 @@ const Home = () => {
             {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
           </Button>
           <div className="text-sm my-3 text-center">
-            Donot have an account?
+            Don’t have an account?{" "}
             <Link className="font-bold" href={"./register"}>
               Register
             </Link>

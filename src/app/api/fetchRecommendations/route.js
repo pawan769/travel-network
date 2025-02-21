@@ -41,7 +41,7 @@ export const POST = async (req) => {
       _id: { $in: recommendations },
     })
 
-      .populate({ path: "author", select: "name" })
+      .populate({ path: "author", select: "name profilePic" })
       .populate({
         path: "comments",
         populate: { path: "commenter", select: "name" },
@@ -57,7 +57,7 @@ export const POST = async (req) => {
     const remainingPosts = await Post.find({
       _id: { $nin: recommendations },
     })
-      .populate({ path: "author", select: "name" })
+      .populate({ path: "author", select: "name profilePic" })
       .populate({
         path: "comments",
         populate: { path: "commenter", select: "name" },
