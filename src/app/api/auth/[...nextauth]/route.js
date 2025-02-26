@@ -53,10 +53,7 @@ export const authOptions = {
       session.user = token;
       return session;
     },
-    // async redirect({ url, baseUrl }) {
-    //   console.log("Redirecting to:", url, "Base URL:", baseUrl);
-    //   return "/dashboard"; // Hardcode the redirect URL for testing
-    // },
+    
   },
   pages: {
     signIn: "/auth/signIn",

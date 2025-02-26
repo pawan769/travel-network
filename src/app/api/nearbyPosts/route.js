@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Post from "@/models/Post";
 
-// Function to calculate the Haversine distance
+
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Earth radius in kilometers
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -13,7 +13,7 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in kilometers
+  const distance = R * c; 
   return distance;
 };
 
@@ -22,7 +22,7 @@ export async function GET(req) {
   const lat = parseFloat(searchParams.get("lat"));
   const lon = parseFloat(searchParams.get("lon"));
 
-  // Check if latitude and longitude are provided
+  
   if (!lat || !lon) {
     return NextResponse.json(
       { error: "Latitude and Longitude are required" },

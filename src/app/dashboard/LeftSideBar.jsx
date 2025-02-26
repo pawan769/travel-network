@@ -57,7 +57,10 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
   return (
     <div className=" h-screen sticky top-0 left-0 flex flex-col space-y-5 text-[3vw] max-w-[300px] md:text-[1.5vw] font-semibold overflow-hidden pt-7  bg-white">
       <div className="text-5xl md:text-[3vw] flex justify-between px-3 w-full overflow-hidden  items-center cursor-pointer  ">
-        <span>LOGO</span>
+        <div className="w-full h-full flex justify-center items-center">
+
+        <Image src={"/images/logo.png"} width={120} height={100} alt="logo" priority />
+        </div>
         <IoMenuSharp
           size={48}
           onClick={menuClickHandler}

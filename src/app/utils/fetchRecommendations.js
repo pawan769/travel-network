@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const fetchRecommendations = async (id) => {
+const fetchRecommendations = async (id, latitude, longitude) => {
   try {
     const response = await axios.post(
-      "./api/fetchRecommendations",
-      { id },
+      "/api/fetchRecommendations",
+      { id, latitude, longitude },
       {
         headers: {
           "Content-Type": "application/json",
@@ -13,7 +13,14 @@ const fetchRecommendations = async (id) => {
     );
     return response.data.posts;
   } catch (error) {
-    return response.data;
+    console.error(
+      "Error fetching recommendations:",
+      error.response?.data || error.message
+    );
+    return (
+      error.response?.data || { success: false, message: "Request failed" }
+    );
   }
 };
+
 export default fetchRecommendations;

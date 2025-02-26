@@ -30,7 +30,7 @@ const DashboardLayout = ({ children }) => {
       <div className="z-30 fixed top-0 left-0 bg-gray-100 text-xl h-14 w-full px-3 font-bold flex gap-5 items-center justify-between pr-5 pl-4 cursor-pointer lg:hidden">
         <div className="flex items-center gap-4 h-10">
           <IoMenuSharp size={38} onClick={menuClickHandler} />
-          <div className="text-3xl font-semibold">LOGO</div>
+          <img src={"/images/logo.png"} width={80} height={60} alt="logo" />
         </div>
         {path === "/dashboard" && (
           <div>
@@ -61,9 +61,7 @@ const DashboardLayout = ({ children }) => {
       {/* Main Content */}
       <div className="lg:ml-[15vw]">{children}</div>
 
-      {modalOpen && (
-        <ModalExample open={modalOpen} />
-      )}
+      {modalOpen && <ModalExample open={modalOpen} />}
 
       <Toaster />
     </div>

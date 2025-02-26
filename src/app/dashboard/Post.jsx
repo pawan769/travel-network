@@ -26,7 +26,6 @@ import { IoLocation } from "react-icons/io5";
 import { useEffect } from "react";
 
 const Post = ({ post }) => {
-  console.log("recommended Posts:",post);
   const { data: session, status } = useSession();
   const [newComment, setNewComment] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
@@ -123,7 +122,6 @@ const Post = ({ post }) => {
       setCurrentImageIndex((prev) => prev + 1);
     }
   };
-  console.log(post.author);
 
   return (
     <div className="rounded-lg p-4 shadow-lg w-fit space-y-1  lg:w-fit  mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
@@ -276,7 +274,7 @@ const Post = ({ post }) => {
       <div className="max-h-[70%] flex flex-col justify-between pb-2 px-1  w-fit  mx-auto">
         {/* <h4 className="font-semibold mb-2 mx-auto">Comments</h4> */}
 
-        {post.comments.length != 0 && (
+        {/* {post.comments.length != 0 && (
           <div className="space-y-2 max-h-[50%] overflow-auto w-[60vw] min-w-[350px] md:min-w-[200px]  lg:max-w-[25vw] mx-auto">
             <div className="  text-sm flex gap-2 rounded-full pl-5">
               <h3 className="font-semibold capitalize">
@@ -285,7 +283,7 @@ const Post = ({ post }) => {
               <p>{post?.comments[post.comments.length - 1].comment}</p>
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="mt-2  flex gap-2 border-2 border-black/20 w-[60vw] min-w-[350px] md:min-w-[200px]  lg:max-w-[25vw] rounded-full px-2">
           <Input

@@ -20,10 +20,18 @@ const recommendItemsForUser = (userId, itemUserMatrix, similarityMatrix) => {
     });
   });
 
+  // Log the scores before sorting
+  console.log("Recommendation Scores (Before Sorting):", scores);
+
   // Sort items by score
-  return Object.entries(scores)
+  const sortedRecommendations = Object.entries(scores)
     .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-    .map(([itemId]) => itemId);
+    .map(([itemId, score]) => {
+      console.log(`Post ID: ${itemId}, Score: ${score}`);
+      return itemId;
+    });
+
+  return sortedRecommendations;
 };
 
 export default recommendItemsForUser;
