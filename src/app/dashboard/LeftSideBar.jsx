@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { Eye, House, SquarePlus } from "lucide-react";
+import { Eye, House, MessageCircle, SquarePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { IoMenuSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
     { icon: <House />, name: "Home", path: "/" },
     { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
+    { icon: <MessageCircle />, name: "messages", path: "messages" },
     {
       icon: (
         <div
@@ -58,8 +59,13 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
     <div className=" h-screen sticky top-0 left-0 flex flex-col space-y-5 text-[3vw] max-w-[300px] md:text-[1.5vw] font-semibold overflow-hidden pt-7  bg-white">
       <div className="text-5xl md:text-[3vw] flex justify-between px-3 w-full overflow-hidden  items-center cursor-pointer  ">
         <div className="w-full h-full flex justify-center items-center">
-
-        <Image src={"/images/logo.png"} width={120} height={100} alt="logo" priority />
+          <Image
+            src={"/images/logo.png"}
+            width={120}
+            height={100}
+            alt="logo"
+            priority
+          />
         </div>
         <IoMenuSharp
           size={48}

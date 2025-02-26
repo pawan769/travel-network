@@ -24,6 +24,8 @@ import { Loader2 } from "lucide-react";
 import deletePost from "../utils/deletePost";
 import { IoLocation } from "react-icons/io5";
 import { useEffect } from "react";
+import createConversation from "../utils/createConversation";
+import { useRouter } from "next/navigation";
 
 const Post = ({ post }) => {
   const { data: session, status } = useSession();
@@ -34,6 +36,7 @@ const Post = ({ post }) => {
   const [showEdit, setShowEdit] = useState(false);
   const dispatch = useDispatch();
   const recommendedPosts = useSelector((state) => state.app.recommendedPosts);
+  const router = useRouter();
 
   useEffect(() => {
     if (post.images && post.images.length > 0) {
@@ -123,12 +126,30 @@ const Post = ({ post }) => {
     }
   };
 
+  const handleMessageClick = async () => {
+    if (!session?.user?.id || !post.author._id) return;
+
+    try {
+      // Create a conversation with the post author
+      const conversation = await createConversation(
+        session.user.id, // Current user ID
+        post.author._id // Post author ID
+      );
+
+      if (conversation) {
+        // Navigate to the messages page
+        router.push("/dashboard/messages");
+      }
+    } catch (error) {
+      console.error("Failed to create conversation:", error);
+    }
+  };
   return (
-    <div className="rounded-lg p-4 shadow-lg w-fit space-y-1  lg:w-fit  mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
+    <div className="rounded-lg p-4 shadow-lg w-fit space-y-1 lg:w-fit mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
       {/* Header */}
-      <div className="flex justify-between items-center w-[60vw] min-w-[350px] md:min-w-[200px]  lg:max-w-[25vw] mx-auto ">
+      <div className="flex justify-between items-center w-[60vw] min-w-[350px] md:min-w-[200px] lg:max-w-[25vw] mx-auto">
         <div className="flex items-center space-x-3">
-          <Avatar className="h-8 w-8  md:z-20  flex items-center justify-center -z-20 ">
+          <Avatar className="h-8 w-8 md:z-20 flex items-center justify-center -z-20">
             <Image
               src={
                 post.author.profilePic?.url
@@ -138,7 +159,7 @@ const Post = ({ post }) => {
               alt="Profile Avatar"
               width={20}
               height={20}
-              className="rounded-full size-8 "
+              className="rounded-full size-8"
               priority
             />
           </Avatar>
@@ -154,9 +175,9 @@ const Post = ({ post }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => alert("Option 1")}>
+            <DropdownMenuItem onClick={handleMessageClick}>
               <Edit2 className="mr-2 h-4 w-4" />
-              Edit
+              Message
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={deletePostHandler}
