@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "./User";
 
 const ConversationSchema = new mongoose.Schema(
   {
@@ -16,12 +17,8 @@ const ConversationSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true } // Enables automatic timestamps (createdAt, updatedAt)
+  { timestamps: true }
 );
 
-// ✅ Ensure Mongoose models object exists before accessing it
-const Conversation =
-  mongoose.models?.Conversation ||
+export default mongoose.models?.Conversation ||
   mongoose.model("Conversation", ConversationSchema);
-
-export default Conversation;

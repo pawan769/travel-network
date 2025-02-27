@@ -12,6 +12,7 @@ const getUser = async (id) => {
         },
       }
     );
+    console.log("response", response);
     return response.data.user;
   } catch (error) {
     return response.data;

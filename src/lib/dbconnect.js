@@ -2,23 +2,24 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
-  );
-}
+let isConnected = false; // Track the connection status
 
 const dbConnect = async () => {
-  if (mongoose.connection.readyState === 1) {
+  if (isConnected) {
+    console.log("MongoDB is already connected.");
     return;
   }
+
   try {
     await mongoose.connect(MONGODB_URI, {
-      useUnifiedTopology: true,
+      dbName: "travelNetwork", // Make sure to target the correct database
     });
-    console.log("Mongoose connection is established successfully");
+
+    isConnected = true; // Mark as connected
+    console.log("✅ MongoDB connected successfully.");
   } catch (error) {
-    throw new Error("Error connecting to mongoose");
+    console.error("❌ MongoDB connection error:", error);
+    throw new Error("Database connection failed");
   }
 };
 

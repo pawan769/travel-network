@@ -1,5 +1,6 @@
-import Conversation from "@/models/Conversation";
+
 import dbConnect from "@/lib/dbconnect";
+import ConversationSchema from "@/models/Conversation";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,7 +8,7 @@ export async function GET() {
     await dbConnect();
 
     // Fetch all conversations and populate the messages field
-    const conversations = await Conversation.find({})
+    const conversations = await ConversationSchema.find({})
       .populate("participants")
       .populate({
         path: "messages",

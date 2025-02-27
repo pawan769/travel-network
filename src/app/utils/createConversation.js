@@ -18,6 +18,7 @@ export default async function createConversation(userId, postAuthorId) {
     const newConversation = new Conversation({
       participants: [userId, postAuthorId],
     });
+    console.log(newConversation);
 
     await newConversation.save(); // Save the new conversation to the database
     return newConversation; // Return the newly created conversation
