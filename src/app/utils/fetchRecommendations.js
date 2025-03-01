@@ -11,7 +11,7 @@ const fetchRecommendations = async (id, latitude, longitude) => {
         },
       }
     );
-    return response.data.posts;
+    return response.data;
   } catch (error) {
     console.error(
       "Error fetching recommendations:",

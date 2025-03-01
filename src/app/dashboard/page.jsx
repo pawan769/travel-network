@@ -4,8 +4,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setItemUserMatrix,
   setMapToggle,
   setRecommendedPosts,
+  setRecommendedScores,
+  setSimilarityMatrix,
   setUser,
 } from "../redux/slices/slices";
 import getUser from "../utils/getUser";
@@ -64,8 +67,14 @@ const Dashboard = () => {
               latitude: location.latitude,
               longitude: location.longitude,
             });
-            if (recommendedPosts)
-              dispatch(setRecommendedPosts(recommendedPosts));
+            if (recommendedPosts) {
+              dispatch(setRecommendedPosts(recommendedPosts.posts));
+              dispatch(setItemUserMatrix(recommendedPosts.itemUserMatrix));
+              dispatch(
+                setRecommendedScores(recommendedPosts.recommendedScores)
+              );
+              dispatch(setSimilarityMatrix(recommendedPosts.similarityMatrix));
+            }
 
             setIsInitialized(true);
           }

@@ -2,6 +2,7 @@ import Conversation from "@/models/Conversation";
 import dbConnect from "@/lib/dbconnect";
 
 export default async function createConversation(userId, postAuthorId) {
+  console.log("yeha aayo");
   await dbConnect(); // Ensure the database connection is established
 
   try {

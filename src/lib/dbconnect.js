@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-let isConnected = false; // Track the connection status
+// if (!MONGODB_URI) {
+//   throw new Error("Please define the MONGODB_URI environment variable");
+// }
+
+let isConnected = false;
 
 const dbConnect = async () => {
   if (isConnected) {
@@ -12,10 +16,12 @@ const dbConnect = async () => {
 
   try {
     await mongoose.connect(MONGODB_URI, {
-      dbName: "travelNetwork", // Make sure to target the correct database
+      dbName: "travelNetwork",
+      useNewUrlParser: true, // Optional, for older Mongoose versions
+      useUnifiedTopology: true, // Optional
     });
 
-    isConnected = true; // Mark as connected
+    isConnected = true;
     console.log("✅ MongoDB connected successfully.");
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);

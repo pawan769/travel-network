@@ -24,7 +24,7 @@ import { Loader2 } from "lucide-react";
 import deletePost from "../utils/deletePost";
 import { IoLocation } from "react-icons/io5";
 import { useEffect } from "react";
-import createConversation from "../utils/createConversation";
+
 import { useRouter } from "next/navigation";
 
 const Post = ({ post }) => {
@@ -130,15 +130,24 @@ const Post = ({ post }) => {
     if (!session?.user?.id || !post.author._id) return;
 
     try {
-      // Create a conversation with the post author
-      const conversation = await createConversation(
-        session.user.id, // Current user ID
-        post.author._id // Post author ID
-      );
+      // Send a POST request to the API route to create a conversation
+      const response = await fetch("/api/conversations/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: session.user.id, // Current user ID
+          postAuthorId: post.author._id, // Post author ID
+        }),
+      });
 
-      if (conversation) {
+      if (response.ok) {
+        const conversation = await response.json();
         // Navigate to the messages page
         router.push("/dashboard/messages");
+      } else {
+        throw new Error(`Failed to create conversation: ${response.status}`);
       }
     } catch (error) {
       console.error("Failed to create conversation:", error);
@@ -148,23 +157,13 @@ const Post = ({ post }) => {
     <div className="rounded-lg p-4 shadow-lg w-fit space-y-1 lg:w-fit mx-auto my-2 min-h-[60vh] border-2 border-zinc-300 bg-gray-100">
       {/* Header */}
       <div className="flex justify-between items-center w-[60vw] min-w-[350px] md:min-w-[200px] lg:max-w-[25vw] mx-auto">
-        <div className="flex items-center space-x-3">
-          <Avatar className="h-8 w-8 md:z-20 flex items-center justify-center -z-20">
-            <Image
-              src={
-                post.author.profilePic?.url
-                  ? post.author.profilePic.url
-                  : "/images/profilepic.jpg"
-              }
-              alt="Profile Avatar"
-              width={20}
-              height={20}
-              className="rounded-full size-8"
-              priority
-            />
-          </Avatar>
-          <h3 className="font-semibold capitalize">{post?.author.name}</h3>
+        <div className=" h-full mr-2">
+          <IoLocation className="size-4  " />
         </div>
+        <h2 className="h-full text-nowrap overflow-hidden capitalize text-left font-semibold ">
+          {post.address}
+        </h2>
+
         <DropdownMenu className="cursor-pointer bg-blue-400">
           <DropdownMenuTrigger asChild>
             <Button
@@ -192,13 +191,13 @@ const Post = ({ post }) => {
         </DropdownMenu>
       </div>
 
-      <div className="flex items-center  justify-start gap-2 w-[60vw] mx-auto min-w-[350px] md:min-w-[200px]  lg:max-w-[25vw] mb-2 text-md">
-        <div className=" h-full">
-          <IoLocation className="size-4  " />
+      <div className="flex items-center  justify-start gap-1 w-[60vw] mx-auto min-w-[350px] md:min-w-[200px]  lg:max-w-[25vw]  text-md">
+        <div className="flex items-center space-x-2 ">
+          <div className="border-2 border-black/30 rounded-full px-1 h-full font-semibold text-xs">
+            Author
+          </div>
+          <h3 className="font-medium text-sm capitalize">{post?.author.name}</h3>
         </div>
-        <h2 className="h-full text-nowrap overflow-hidden capitalize text-left ">
-          {post.address}
-        </h2>
       </div>
 
       {/* Image Carousel */}

@@ -2,7 +2,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { Eye, House, MessageCircle, SquarePlus } from "lucide-react";
+import {
+  BookDashed,
+  Eye,
+  House,
+  MessageCircle,
+  SquarePlus,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { IoMenuSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +27,7 @@ const LeftSideBar = ({ setNavToggle, menuClickHandler }) => {
     { icon: <Eye />, name: "Explore", path: "explore" },
     { icon: <SquarePlus />, name: "Create", path: "create" },
     { icon: <MessageCircle />, name: "messages", path: "messages" },
+    { icon: <BookDashed />, name: "Visualization", path: "visualization" },
     {
       icon: (
         <div

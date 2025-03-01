@@ -1,14 +1,13 @@
 import Message from "@/models/Message";
 import dbConnect from "@/lib/dbconnect";
+import mongoose from "mongoose"; // Explicitly import mongoose
 import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
   try {
     await dbConnect();
+    const { userId: conversationId } = await params;
 
-    const { conversationId } = params;
-
-    // Fetch messages for the specified conversation
     const messages = await Message.find({ conversationId }).sort({
       createdAt: 1,
     });
@@ -27,8 +26,24 @@ export async function POST(req, { params }) {
   try {
     await dbConnect();
 
-    const { conversationId } = params;
+    const { userId: conversationId } = await params;
+    console.log("POST conversationId:", conversationId); // Debug
     const { sender, text } = await req.json();
+    console.log("Request body:", { sender, text }); // Debug
+
+    // Validate inputs
+    if (!conversationId || !mongoose.Types.ObjectId.isValid(conversationId)) {
+      return NextResponse.json(
+        { error: "Invalid or missing conversationId" },
+        { status: 400 }
+      );
+    }
+    if (!sender || !text) {
+      return NextResponse.json(
+        { error: "Sender and text are required" },
+        { status: 400 }
+      );
+    }
 
     // Create a new message
     const newMessage = new Message({

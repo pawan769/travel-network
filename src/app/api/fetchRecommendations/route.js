@@ -1,13 +1,12 @@
 import dbConnect from "@/lib/dbconnect";
 import Post from "@/models/Post";
 import { NextResponse } from "next/server";
-import getItemUserMatrix from "./getItemUserMatrix";
+
 import calculateItemSimilarityMatrix from "./similarityMatrix";
 import recommendItemsForUser from "./recommendItemsForUser";
 
-// Haversine function to calculate distance between two points
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Earth radius in kilometers
+  const R = 6371;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
@@ -25,9 +24,8 @@ export const POST = async (req) => {
     const { id } = await req.json();
 
     const { userId, latitude, longitude } = id;
-    console.log("data", userId, latitude, longitude);
+   
 
-    // Validate the presence of user ID and location
     if (!userId || latitude === undefined || longitude === undefined) {
       return NextResponse.json({
         message: "User ID and location (latitude, longitude) are required",
@@ -36,7 +34,6 @@ export const POST = async (req) => {
       });
     }
 
-    // Ensure latitude and longitude are numbers
     const lat = parseFloat(latitude);
     const lon = parseFloat(longitude);
 
@@ -48,7 +45,6 @@ export const POST = async (req) => {
       });
     }
 
-    // Connect to the database
     await dbConnect();
 
     // Fetch all posts
@@ -70,7 +66,7 @@ export const POST = async (req) => {
           post.location.lat === undefined ||
           post.location.lng === undefined
         ) {
-          return null; // Skip posts without location data
+          return null;
         }
 
         const distance = haversineDistance(
@@ -81,7 +77,7 @@ export const POST = async (req) => {
         );
         return { ...post.toObject(), distance };
       })
-      .filter(Boolean); // Remove null values
+      .filter(Boolean); 
 
     if (postsWithDistance.length === 0) {
       return NextResponse.json({
@@ -91,15 +87,11 @@ export const POST = async (req) => {
       });
     }
 
-    // Sort by distance and select the closest 10 posts
     const sortedDistancePosts = postsWithDistance.sort(
       (a, b) => a.distance - b.distance
     );
     const limitedPosts = sortedDistancePosts;
 
-    console.log("Nearby posts:", limitedPosts);
-
-    // Construct item-user matrix for recommendation
     const itemUserMatrix = {};
     limitedPosts.forEach((post) => {
       itemUserMatrix[post._id] = {};
@@ -108,12 +100,8 @@ export const POST = async (req) => {
       });
     });
 
-    console.log("Item-User Matrix:", itemUserMatrix);
-
-    // Calculate item similarity based on likes
     const similarityMatrix = calculateItemSimilarityMatrix(itemUserMatrix);
 
-    // Get recommendations for the user
     const recommendations = recommendItemsForUser(
       userId,
       itemUserMatrix,
@@ -121,7 +109,7 @@ export const POST = async (req) => {
     );
 
     const recommendedPosts = await Post.find({
-      _id: { $in: recommendations },
+      _id: { $in: recommendations.sortedRecommendations },
     })
       .populate({ path: "author", select: "name profilePic" })
       .populate({
@@ -129,15 +117,13 @@ export const POST = async (req) => {
         populate: { path: "commenter", select: "name" },
       });
 
-    // Sort recommended posts in the same order as recommendations
-    const sortedPosts = recommendations
-      .map((id) => recommendedPosts.find((post) => post._id.toString() === id))
-      .filter(Boolean); // Remove null values
-
     
+    const sortedPosts = recommendations.sortedRecommendations
+      .map((id) => recommendedPosts.find((post) => post._id.toString() === id))
+      .filter(Boolean); 
 
     const remainingPosts = await Post.find({
-      _id: { $nin: recommendations },
+      _id: { $nin: recommendations.sortedRecommendations },
     })
       .populate({ path: "author", select: "name profilePic" })
       .populate({
@@ -150,6 +136,9 @@ export const POST = async (req) => {
 
     return NextResponse.json(
       {
+        similarityMatrix: similarityMatrix,
+        itemUserMatrix: itemUserMatrix,
+        recommendedScores: recommendations.scores,
         posts: finalRecommendation,
         message: "Fetching Recommendation successful",
         success: true,
@@ -157,7 +146,7 @@ export const POST = async (req) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching recommendations:", error);
+   
     return NextResponse.json({
       error: error.message,
       message: "Fetching Recommendation failed",

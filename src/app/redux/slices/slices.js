@@ -6,6 +6,9 @@ const initialState = {
   recommendedPosts: {},
   mapToggle: false,
   modalOpen: false,
+  itemUserMatrix: {},
+  recommendedScores: {},
+  similarityMatrix: {},
 };
 const appSlice = createSlice({
   name: "app",
@@ -34,9 +37,39 @@ const appSlice = createSlice({
         state.modalOpen = action.payload;
       }
     },
+    setItemUserMatrix: (state, action) => {
+      if (
+        JSON.stringify(state.itemUserMatrix) !== JSON.stringify(action.payload)
+      ) {
+        state.itemUserMatrix = action.payload;
+      }
+    },
+    setRecommendedScores: (state, action) => {
+      if (
+        JSON.stringify(state.recommendedScores) !==
+        JSON.stringify(action.payload)
+      ) {
+        state.recommendedScores = action.payload;
+      }
+    },
+    setSimilarityMatrix: (state, action) => {
+      if (
+        JSON.stringify(state.similarityMatrix) !==
+        JSON.stringify(action.payload)
+      ) {
+        state.similarityMatrix = action.payload;
+      }
+    },
   },
 });
-export const { setModalOpen, setUser, setRecommendedPosts, setMapToggle } =
-  appSlice.actions;
+export const {
+  setModalOpen,
+  setUser,
+  setRecommendedPosts,
+  setMapToggle,
+  setItemUserMatrix,
+  setRecommendedScores,
+  setSimilarityMatrix,
+} = appSlice.actions;
 
 export default appSlice.reducer;

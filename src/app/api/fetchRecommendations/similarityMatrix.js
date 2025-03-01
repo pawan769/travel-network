@@ -17,7 +17,7 @@ const cosineSimilarity = (itemA, itemB) => {
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   };
 
-  //generate similarity matrix for given itemUserMatrix
+  
   const calculateItemSimilarityMatrix = (itemUserMatrix) => {
     const items = Object.keys(itemUserMatrix);
     const similarityMatrix = {};

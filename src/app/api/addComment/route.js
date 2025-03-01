@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export const POST = async (req) => {
   try {
     const { postId, comment, commenter } = await req.json();
-    console.log(postId, comment, commenter);
+
     await dbConnect();
 
     if (!comment) {

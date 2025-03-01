@@ -22,6 +22,6 @@ const MessageSchema = new mongoose.Schema({
 });
 
 const Message =
-  mongoose.models.Message || mongoose.model("Message", MessageSchema);
+  mongoose.models?.Message || mongoose.model("Message", MessageSchema);
 
 export default Message;
