@@ -60,7 +60,7 @@ const Dashboard = () => {
           const userDetails = await getUser(session.user.id);
           if (userDetails) dispatch(setUser(userDetails));
 
-          // Fetch recommended posts (Pass location)
+          
           if (location) {
             const recommendedPosts = await fetchRecommendations({
               userId: session.user.id,

@@ -9,7 +9,6 @@ const RecommendationsVisualization = () => {
   const similarityMatrix =
     useSelector((state) => state.app.similarityMatrix) || {};
 
-
   const allUsers = new Set();
   Object.values(itemUserMatrix).forEach((item) => {
     Object.keys(item).forEach((user) => allUsers.add(user));
@@ -51,9 +50,7 @@ const RecommendationsVisualization = () => {
           <tbody>
             {Object.entries(itemUserMatrix).map(([itemId, users]) => (
               <tr key={itemId}>
-                <td className="border border-gray-200 p-2">
-                  {itemId}
-                </td>
+                <td className="border border-gray-200 p-2">{itemId}</td>
                 {userIds.map((user) => (
                   <td
                     key={`${itemId}-${user}`}
@@ -118,7 +115,7 @@ const RecommendationsVisualization = () => {
       <table className="min-w-full border-collapse border border-gray-200">
         <thead>
           <tr>
-            <th className="border border-gray-200 p-2 bg-gray-100">User ID</th>
+            <th className="border border-gray-200 p-2 bg-gray-100">Post ID</th>
             <th className="border border-gray-200 p-2 bg-gray-100">Score</th>
           </tr>
         </thead>
@@ -127,9 +124,7 @@ const RecommendationsVisualization = () => {
             .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
             .map(([userId, score]) => (
               <tr key={userId} className={score > 0 ? "bg-yellow-100" : ""}>
-                <td className="border border-gray-200 p-2">
-                  {userId}
-                </td>
+                <td className="border border-gray-200 p-2">{userId}</td>
                 <td className="border border-gray-200 p-2 text-center">
                   {score?.toFixed(2)}
                 </td>
